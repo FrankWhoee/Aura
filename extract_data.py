@@ -4,7 +4,7 @@ import numpy
 from matplotlib import pyplot
 import sys
 
-path_data = "../Aura_Data/IvyGAP"
+path_data = "../Aura_Data/RIDER NEURO MRI"
 lstFilesDCM = []
 for dirName, subdirList, fileList in os.walk(path_data) :
     for filename in fileList:
@@ -42,7 +42,7 @@ for filenameDCM in lstFilesDCM:
         badFiles += 1
         sys.stderr.write("Exception occurred for file " + filenameDCM + "\n")
 
-f = open("Data/IVY_GAP_EXTRACTED_DATA.txt","w+")
+f = open("RIDER_data", "w+")
 f.write(ArrayDicom.tobytes());
 f.close()
 strbad = str(badFiles)
@@ -55,10 +55,10 @@ for i in range(67):
     print(lstFilesDCM[i])
     pyplot.figure(dpi=300)
     pyplot.axes().set_aspect('equal', 'datalim')
-    # pyplot.set_cmap(pyplot.gray())
+    pyplot.set_cmap(pyplot.gray())
     print(x)
     print(y)
     print(ArrayDicom[:, :, i])
-    pyplot.pcolormesh(x, y, numpy.flipud(ArrayDicomLarge[:, :, i]))
+    pyplot.pcolormesh(x, y, numpy.flipud(ArrayDicom[:, :, i]))
     pyplot.show()
 
