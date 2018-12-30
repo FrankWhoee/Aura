@@ -1,5 +1,5 @@
 # Aura
-![https://raw.githubusercontent.com/FrankWhoee/Aura/master/aura.png](Logo) <br>
+![Logo](https://raw.githubusercontent.com/FrankWhoee/Aura/master/aura.png) <br>
 
 Early Detection of the High-Grade Astrocytoma Brain Cancer Glioblastoma Multiforme Through Implementation of Deep Learning Convolutional Neural Networks on Neurological Magnetic Resonance Imaging
 
