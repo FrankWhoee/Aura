@@ -1,6 +1,7 @@
 from __future__ import print_function
 import numpy as np
 import mxnet as mx
+import aura_loader
 from mxnet import nd, autograd, gluon
 mx.random.seed(1)
 
@@ -9,8 +10,12 @@ ctx = mx.cpu()
 batch_size = 64
 num_inputs = 784
 num_outputs = 10
+
+
+
 def transform(data, label):
     return nd.transpose(data.astype(np.float32), (2,0,1))/255, label.astype(np.float32)
+
 train_data = gluon.data.DataLoader(gluon.data.vision.MNIST(train=True, transform=transform),
                                       batch_size, shuffle=True)
 test_data = gluon.data.DataLoader(gluon.data.vision.MNIST(train=False, transform=transform),
