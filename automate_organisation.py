@@ -1,6 +1,23 @@
 import os
 
 # This python script was used to extract all the nii files from a download from humanconnectome
+# To use it:
+# 1. Dump all of your data into one folder named Aura_Data/Healthy
+# 2. Delete all the .md5 files
+# 3. Run this script in ../Automate relative to Aura_Data, so the file structure looks like this
+# ParentFolder
+# L Aura_Data
+#   L Healthy
+#     L 123456-preproc...
+#     L 789012-preproc...
+#     L ...all the rest of your data
+# L Automate
+#   L automate_organisation.py
+# 4. Running the script would involve navigating to the automate folder:
+# $ cd Automate
+# $ python automate_organisation.py
+# This will generate a NIFTI folder in Healthy
+# 5. Your files should now be organised! You can delete everything in Aura_Data except for the NIFTI folder now.
 
 root_path = "../Aura_Data";
 for subdir, dirs, files in os.walk(root_path + "/Healthy"):

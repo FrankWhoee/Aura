@@ -39,6 +39,6 @@ for i in range(num_of_images):
     img = numpy.flipud(ArrayDicom[:, :, i]);
     # pyplot.hist(img.ravel(), bins=256, range=(0.0, 1.0), fc='k', ec='k')
     print("Displaying", i, "out of", num_of_images)
-    pyplot.pcolormesh(numpy.flipud(ArrayDicom[:, :, i]), clim=(0.0,0.001))
+    pyplot.pcolormesh(img, clim=(0.0,0.001))
     pyplot.show()
 
