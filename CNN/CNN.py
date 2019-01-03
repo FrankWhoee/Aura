@@ -1,8 +1,11 @@
 from __future__ import print_function
-import numpy as np
+
 import mxnet as mx
-import aura_loader
+import numpy as np
 from mxnet import nd, autograd, gluon
+
+from aura.aura_loader import read_file
+
 mx.random.seed(1)
 
 ctx = mx.cpu()
@@ -11,6 +14,10 @@ batch_size = 64
 num_inputs = 784
 num_outputs = 10
 
+healthy_data = read_file(path="../../Aura_Data/{136x136x217000}Healthy.aura")
+# FLAIR_data = read_file(path="../../Aura_Data/{256x216x17555}3D_FLAIR_RIDER.aura")
+# FLASH_data = read_file(path="../../Aura_Data/{256x256x17555}3D_FLASH_RIDER.aura")
+
 
 
 def transform(data, label):
@@ -18,6 +25,9 @@ def transform(data, label):
 
 train_data = gluon.data.DataLoader(gluon.data.vision.MNIST(train=True, transform=transform),
                                       batch_size, shuffle=True)
+train_data = gluon.data.DataLoader(healthy_data,
+                                      batch_size, shuffle=True)
+print(train_data)
 test_data = gluon.data.DataLoader(gluon.data.vision.MNIST(train=False, transform=transform),
                                      batch_size, shuffle=False)
 
