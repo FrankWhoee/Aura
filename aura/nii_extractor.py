@@ -1,7 +1,7 @@
 import os
 import sys
 import time
-
+from matplotlib import pyplot as plt
 import matplotlib.pyplot as plt
 import nibabel as nib
 import numpy
@@ -27,7 +27,7 @@ for dirName, subdirList, fileList in os.walk(path_data) :
             print("Loaded " + filename)
             lstFilesNii.append(os.path.join(dirName, filename))
 
-print("\n" + str(lstFilesNii.__sizeof__()) + " file names read.")
+print("\n" + str(len(lstFilesNii)) + " file names read.")
 lstFilesNii.sort()
 
 img = nib.load(lstFilesNii[2])
@@ -39,7 +39,7 @@ def show_slices(slices):
 
 x, y, z = img_data.shape[0:3]
 array_size = max(x, y, z)
-dimensions = (array_size,array_size,217000)
+dimensions = (array_size,array_size,((x+y+z) * len(lstFilesNii)))
 ArrayNifti = np.zeros(dimensions, dtype=numpy.float16)
 
 newFilename = "{" + str(dimensions[0]) + "x" + str(dimensions[1]) + "x" + str(dimensions[2]) + "}" + newFilename
@@ -62,6 +62,10 @@ for filenameNii in lstFilesNii:
     if len(img_data.shape) > 3:
         img_data = img_data[:,:,:,0]
     x, y, z = img_data.shape[0:3]
+
+    # plt.imshow(eu.convertToSize(img_data[:,50,:], (array_size, array_size)))
+    # plt.show()
+
     for i in range(x):
         ArrayNifti[:, :, i] = eu.convertToSize(img_data[i, :, :], (array_size, array_size))
 
