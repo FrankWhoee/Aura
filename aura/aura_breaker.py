@@ -18,9 +18,9 @@ def break_aura(path,pieces):
         print("Extracting " + str(chunkSize * piece) + " to " + str(chunkSize * piece + chunkSize))
         for i in range(chunkSize):
             chunk[:,:,i] = array[:,:,i + (chunkSize * piece)]
-        f = filepath + "/{" + str(l) + "x" + str(w) + "x" + str(chunk.shape[2]) + "}Chunk" + str(piece) + "{256x256x70220}.aura"
+        f = filepath + "/{" + str(l) + "x" + str(w) + "x" + str(chunk.shape[2]) + "}Chunk" + str(piece) + ".aura"
         print("Saving chunk " + str(piece) + " to " + f + "\n")
         chunk.tofile(f)
     print("----------------- CHUNKING COMPLETE -----------------")
 
-break_aura("../../Aura_Data/{136x136x217000}Healthy.aura", 40)
+break_aura("../../Aura_Data/{136x136x221182}Healthy.aura", 94)

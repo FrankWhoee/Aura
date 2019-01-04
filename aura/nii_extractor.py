@@ -52,6 +52,9 @@ badFiles = 0
 goodFiles = 0
 image_num = 0
 progress_bar_length = 50;
+last_index = 0;
+
+initial_time = time.time()
 
 for filenameNii in lstFilesNii:
     # print("Extracting " + filenameDCM)
@@ -67,29 +70,36 @@ for filenameNii in lstFilesNii:
     # plt.show()
 
     for i in range(x):
-        ArrayNifti[:, :, i] = eu.convertToSize(img_data[i, :, :], (array_size, array_size))
+        ArrayNifti[:, :, i + last_index] = eu.convertToSize(img_data[i, :, :], (array_size, array_size))
 
     for i in range(y):
-        ArrayNifti[:, :, i + x] = eu.convertToSize(img_data[:, i, :], (array_size, array_size))
+        ArrayNifti[:, :, i + x + last_index] = eu.convertToSize(img_data[:, i, :], (array_size, array_size))
 
     for i in range(z):
-        ArrayNifti[:, :, i + x + y] = eu.convertToSize(img_data[:, :, i], (array_size, array_size))
+        ArrayNifti[:, :, i + x + y + last_index] = eu.convertToSize(img_data[:, :, i], (array_size, array_size))
+
+    final_time = time.time()
+    duration = final_time - initial_time
+    last_index += x + y + z
     sys.stdout.write('\r')
     bar = ""
     for x in range((int)((image_num / len(lstFilesNii)) * progress_bar_length)):
         bar += "▮"
     for x in range((int)((1 - (image_num / len(lstFilesNii))) * progress_bar_length)):
         bar += " "
-    progress_bar = "[" + bar + "]" + str(((image_num / len(lstFilesNii)) * 100))[0:5] + "%"
+    progress_bar = "[" + bar + "]" + str(((image_num / len(lstFilesNii)) * 100))[0:5] + "% (" + str(duration)[0:5] + "s)"
     sys.stdout.write(progress_bar)
     sys.stdout.flush()
     image_num += 1
 
+final_time = time.time()
+duration = final_time - initial_time
 ArrayNifti.tofile(newFilename)
 print("\n\n----------------------- DATA EXTRACTION COMPLETE. -----------------------")
 print(badFiles, " bad files found and not read because of invalid dimensions.")
 print(goodFiles, " good files found and read, with proper dimensions.")
 print("Your matrix dimensions are (length, width, number of images): ", dimensions)
+print("Extraction completed in " + str(duration)[0:5] + "s")
 
 
 
