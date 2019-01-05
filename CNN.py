@@ -24,8 +24,8 @@ for i in range(2353):
     train_data[i + 3511] = healthy_train_data[i]
 print(train_data.shape)
 
-cancerous_test_data = read_file(path="../../Aura_Data/ChunkedRIDER/{256x256x3511}Chunk1.aura").T
-healthy_test_data = read_file(path="../../Aura_Data/ChunkedHealthy/{136x136x2353}Chunk1.aura")
+cancerous_test_data = read_file(path="../Aura_Data/ChunkedRIDER/{256x256x3511}Chunk1.aura").T
+healthy_test_data = read_file(path="../Aura_Data/ChunkedHealthy/{136x136x2353}Chunk1.aura")
 healthy_test_data = reshape(healthy_test_data, (256,256,2353)).T
 test_data = np.zeros((5864, 256,256))
 for i in range(3511):
