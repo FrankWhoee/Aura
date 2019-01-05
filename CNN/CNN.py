@@ -1,18 +1,21 @@
 from __future__ import print_function
-from aura.aura_loader import read_file
+import sys
 import numpy as np
-from aura.extractor_util import reshape
 import keras
 from keras.datasets import mnist
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 
+
+from aura.extractor_util import reshape
+from aura.aura_loader import read_file
+
 print("Modules imported.")
 
 # Set up data
-cancerous_train_data = read_file(path="../../Aura_Data/ChunkedRIDER/{256x256x3511}Chunk0.aura").T
-healthy_train_data = read_file(path="../../Aura_Data/ChunkedHealthy/{136x136x2353}Chunk0.aura")
+cancerous_train_data = read_file(path="../Aura_Data/ChunkedRIDER/{256x256x3511}Chunk0.aura").T
+healthy_train_data = read_file(path="../Aura_Data/ChunkedHealthy/{136x136x2353}Chunk0.aura")
 healthy_train_data = reshape(healthy_train_data, (256,256,2353)).T
 train_data = np.zeros((5864, 256,256))
 for i in range(3511):
