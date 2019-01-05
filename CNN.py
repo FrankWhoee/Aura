@@ -1,4 +1,5 @@
 from __future__ import print_function
+import time
 import sys
 import numpy as np
 import keras
@@ -82,5 +83,7 @@ model.fit(x_train, y_train,
           verbose=1,
           validation_data=(x_test, y_test))
 score = model.evaluate(x_test, y_test, verbose=0)
+finish_time = str(time.time())
+model.save("model"+finish_time[:finish_time.find(".")]+".hf")
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
