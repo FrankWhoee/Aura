@@ -41,7 +41,7 @@ for i in range(num_of_images):
     pyplot.figure(dpi=300)
     pyplot.axes().set_aspect('equal', 'datalim')
     pyplot.set_cmap(pyplot.gray())
-    img = numpy.flipud(Array[:, :, i + 434])
+    img = numpy.flipud(Array[:, :, i])
     print("Displaying", i, "out of", num_of_images)
     pyplot.pcolormesh(img)
     pyplot.show()

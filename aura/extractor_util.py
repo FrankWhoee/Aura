@@ -8,3 +8,10 @@ def convertToSize(input, size):
                 output[row][col] = input[row][col]
 
     return output
+
+
+def reshape(input,size):
+    output = np.zeros(size)
+    for image in range(output.shape[2]):
+        output[:,:,image] = convertToSize(input[:,:,image],size[0:2])
+    return output
