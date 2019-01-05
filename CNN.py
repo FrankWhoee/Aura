@@ -1,6 +1,6 @@
 from __future__ import print_function
 import time
-import sys
+import os
 import numpy as np
 import keras
 from keras.datasets import mnist
@@ -10,47 +10,56 @@ from keras.layers import Conv2D, MaxPooling2D
 
 
 from aura.extractor_util import reshape
+from aura.extractor_util import parseAuraDimensions as pAD
 from aura.aura_loader import read_file
 
 print("Modules imported.")
+print(os.getcwd())
+root = "../Aura_Data/Dataset/";
+cancerSize = "{256x256x270}"
+healthySize = "{136x136x181}"
 
+cl,cw,cn = pAD(cancerSize)
+hl,hw,hn = pAD(healthySize)
+fl, fw = max(cl, cw, hl, hw), max(cl, cw, hl, hw)
+fn = cn + hn
 # Set up data
-cancerous_train_data = read_file(path="../Aura_Data/ChunkedRIDER/{256x256x3511}Chunk0.aura").T
-healthy_train_data = read_file(path="../Aura_Data/ChunkedHealthy/{136x136x2353}Chunk0.aura")
-healthy_train_data = reshape(healthy_train_data, (256,256,2353)).T
-train_data = np.zeros((5864, 256,256))
-for i in range(3511):
+cancerous_train_data = read_file(path=root + cancerSize + "CancerTrainset.aura").T
+healthy_train_data = read_file(path=root+ healthySize + "HealthyTrainset.aura")
+healthy_train_data = reshape(healthy_train_data, (fl,fw,hn)).T
+train_data = np.zeros((fn, fl,fw))
+for i in range(cn):
     train_data[i] = cancerous_train_data[i]
-for i in range(2353):
-    train_data[i + 3511] = healthy_train_data[i]
+for i in range(hn):
+    train_data[i + cn] = healthy_train_data[i]
 print(train_data.shape)
 
-cancerous_test_data = read_file(path="../Aura_Data/ChunkedRIDER/{256x256x3511}Chunk1.aura").T
-healthy_test_data = read_file(path="../Aura_Data/ChunkedHealthy/{136x136x2353}Chunk1.aura")
-healthy_test_data = reshape(healthy_test_data, (256,256,2353)).T
-test_data = np.zeros((5864, 256,256))
-for i in range(3511):
+cancerous_test_data = read_file(path=root + cancerSize + "CancerTestset.aura").T
+healthy_test_data = read_file(path=root + healthySize + "HealthyTestset.aura")
+healthy_test_data = reshape(healthy_test_data, (fl,fw, hn)).T
+test_data = np.zeros((fn, fl,fw))
+for i in range(cn):
     test_data[i] = cancerous_test_data[i]
-for i in range(2353):
-    test_data[i + 3511] = healthy_test_data[i]
+for i in range(hn):
+    test_data[i + cn] = healthy_test_data[i]
 print(test_data.shape)
 
-labels = np.zeros(5864)
-for i in range(3511):
+labels = np.zeros(fn)
+for i in range(cn):
     labels[i] = 1
 
 batch_size = 8
 num_classes = 2
-epochs = 8
+epochs = 2
 
 # input image dimensions
-img_rows, img_cols = 256, 256
+img_rows, img_cols = fl,fw
 
 y_train = labels.copy()
 y_test = labels.copy()
 
-x_train = train_data.reshape(5864,256,256,1)
-x_test = test_data.reshape(5864,256,256,1)
+x_train = train_data.reshape(fn,fl,fw,1)
+x_test = test_data.reshape(fn,fl,fw,1)
 
 
 print('x_train shape:', x_train.shape)
@@ -64,7 +73,7 @@ y_test = keras.utils.to_categorical(y_test, num_classes)
 model = Sequential()
 model.add(Conv2D(32, kernel_size=(3, 3),
                  activation='relu',
-                 input_shape=(256,256,1)))
+                 input_shape=(fl,fw,1)))
 model.add(Conv2D(64, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))

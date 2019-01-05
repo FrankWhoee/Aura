@@ -7,7 +7,7 @@ def read_file(path):
     filename = filename[len(filename) - 1]
     l, w, n = filename[filename.find("{") + 1: filename.rfind("}")].split("x")
     l, w, n = int(l), int(w), int(n)
-    print("Loading images...")
+    print("Loading " + filename + "...")
     initial = time.time()
     # Load unshaped array into numpy
     unshapedArray = numpy.fromfile(path, dtype=numpy.float16);

@@ -15,3 +15,8 @@ def reshape(input,size):
     for image in range(output.shape[2]):
         output[:,:,image] = convertToSize(input[:,:,image],size[0:2])
     return output
+
+def parseAuraDimensions(dimensions):
+    l, w, n = dimensions[dimensions.find("{") + 1: dimensions.rfind("}")].split("x")
+    l, w, n = int(l), int(w), int(n)
+    return l,w,n
