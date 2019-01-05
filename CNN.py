@@ -38,7 +38,7 @@ labels = np.zeros(5864)
 for i in range(3511):
     labels[i] = 1
 
-batch_size = 733
+batch_size = 8
 num_classes = 2
 epochs = 8
 
