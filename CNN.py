@@ -19,8 +19,8 @@ root = "../Aura_Data/";
 cancerPath = root + "ChunkedRIDER/"
 healthyPath = root + "ChunkedHealthy/"
 
-cancerSize = "{256x256x270}"
-healthySize = "{136x136x181}"
+cancerSize = "{256x256x3511}"
+healthySize = "{136x136x2353}"
 
 cl,cw,cn = pAD(cancerSize)
 hl,hw,hn = pAD(healthySize)
