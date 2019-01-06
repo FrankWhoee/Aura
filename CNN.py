@@ -53,7 +53,7 @@ for i in range(cn):
 
 batch_size = 8
 num_classes = 2
-epochs = 2
+epochs = 8
 
 # input image dimensions
 img_rows, img_cols = fl,fw
