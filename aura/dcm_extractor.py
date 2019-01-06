@@ -7,10 +7,10 @@ sys.stderr.write("WARNING: All .dcm files must have the same image dimensions.\n
 time.sleep(0.01)
 # path_data = input("Path to folder containing all .dcm files: ")
 newFilename = input("Filename to dump information into: ")
-path_data = "../../Aura_Data/RIDER NEURO MRI"
+path_data = "../Aura_Data/Unextracted/IvyGAP/W1"
 if "{256x256x70220}.aura" not in newFilename:
-    newFilename += "{256x256x70220}.aura"
-print("Saving to " + newFilename)
+    newFilename += ".aura"
+
 time.sleep(5)
 
 lstFilesDCM = []
