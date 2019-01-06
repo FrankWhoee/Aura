@@ -27,8 +27,8 @@ hl,hw,hn = pAD(healthySize)
 fl, fw = max(cl, cw, hl, hw), max(cl, cw, hl, hw)
 fn = cn + hn
 # Set up data
-cancerous_train_data = read_file(path=root + cancerSize + "Chunk0.aura").T
-healthy_train_data = read_file(path=root+ healthySize + "Chunk0.aura")
+cancerous_train_data = read_file(path=cancerPath + cancerSize + "Chunk0.aura").T
+healthy_train_data = read_file(path=healthyPath+ healthySize + "Chunk0.aura")
 healthy_train_data = reshape(healthy_train_data, (fl,fw,hn)).T
 train_data = np.zeros((fn, fl,fw))
 for i in range(cn):
@@ -37,8 +37,8 @@ for i in range(hn):
     train_data[i + cn] = healthy_train_data[i]
 print(train_data.shape)
 
-cancerous_test_data = read_file(path=root + cancerSize + "Chunk1.aura").T
-healthy_test_data = read_file(path=root + healthySize + "Chunk1.aura")
+cancerous_test_data = read_file(path=cancerPath + cancerSize + "Chunk1.aura").T
+healthy_test_data = read_file(path=healthyPath + healthySize + "Chunk1.aura")
 healthy_test_data = reshape(healthy_test_data, (fl,fw, hn)).T
 test_data = np.zeros((fn, fl,fw))
 for i in range(cn):
