@@ -2,8 +2,13 @@ import numpy as np
 import scipy
 
 def convertToSize(input, size):
-    image = scipy.misc.imresize(input, size)
-    return image
+    output = np.zeros(size)
+    for row in range(output.shape[0]):
+        for col in range(output.shape[1]):
+            if row < len(input) and col < len(input[row]):
+                output[row][col] = input[row][col]
+
+    return output
 
 
 def reshape(input,size):
