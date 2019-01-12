@@ -8,7 +8,8 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 import random
-
+import scipy.misc
+import matplotlib.pyplot as plt
 from aura.extractor_util import reshape
 from aura.extractor_util import parseAuraDimensions as pAD
 from aura.aura_loader import read_file
@@ -77,7 +78,7 @@ for i,(data,label) in enumerate(testing):
 
 batch_size = 8
 num_classes = 2
-epochs = 2
+epochs = 8
 
 # input image dimensions
 img_rows, img_cols = fl,fw
@@ -106,31 +107,30 @@ model.add(Conv2D(32, kernel_size=(3, 3),
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Conv2D(64, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(64, (3, 3), activation='relu'))
+model.add(Conv2D(128, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(64, (3, 3), activation='relu'))
+model.add(Conv2D(256, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(64, (3, 3), activation='relu'))
+model.add(Conv2D(512, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(64, (3, 3), activation='relu'))
+model.add(Conv2D(1024, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 
 
 # Dense layers and output
 model.add(Flatten())
-model.add(Dense(128, activation='relu'))
-model.add(Dropout(0.4))
-model.add(Dense(128, activation='relu'))
+model.add(Dense(2048, activation='relu'))
 model.add(Dropout(0.8))
-model.add(Dense(128, activation='relu'))
-
+model.add(Dense(4096, activation='relu'))
+model.add(Dropout(0.69874))
+model.add(Dense(2048, activation='relu'))
 model.add(Dense(num_classes, activation='softmax'))
 
 model.compile(loss=keras.losses.categorical_crossentropy,
               optimizer=keras.optimizers.Adadelta(),
               metrics=['accuracy'])
 
-model.fit(x_train, y_train,
+history = model.fit(x_train, y_train,
           batch_size=batch_size,
           epochs=epochs,
           verbose=1,
@@ -140,3 +140,11 @@ finish_time = str(time.time())
 model.save("model"+finish_time[:finish_time.find(".")]+".hf")
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
+
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()

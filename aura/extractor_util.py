@@ -1,5 +1,6 @@
 import numpy as np
-import scipy
+import scipy.misc
+import matplotlib.pyplot as plt
 
 def convertToSize(input, size):
     output = np.zeros(size)
@@ -14,7 +15,8 @@ def convertToSize(input, size):
 def reshape(input,size):
     output = np.zeros(size)
     for image in range(output.shape[2]):
-        output[:,:,image] = convertToSize(input[:,:,image],size[0:2])
+        output[:,:,image] = scipy.misc.imresize(input[:,:,image],size[0:2])
+
     return output
 
 def parseAuraDimensions(dimensions):

@@ -32,29 +32,29 @@ model.add(Conv2D(32, kernel_size=(3, 3),
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Conv2D(64, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(64, (3, 3), activation='relu'))
+model.add(Conv2D(128, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(64, (3, 3), activation='relu'))
+model.add(Conv2D(256, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(64, (3, 3), activation='relu'))
+model.add(Conv2D(512, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(64, (3, 3), activation='relu'))
+model.add(Conv2D(1024, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 
 
 # Dense layers and output
 model.add(Flatten())
-model.add(Dense(128, activation='relu'))
+model.add(Dense(1024, activation='relu'))
 model.add(Dropout(0.4))
-model.add(Dense(128, activation='relu'))
+model.add(Dense(2048, activation='relu'))
 model.add(Dropout(0.8))
-model.add(Dense(128, activation='relu'))
-
+model.add(Dense(1024, activation='relu'))
 model.add(Dense(num_classes, activation='softmax'))
 
-model.load_weights("Model-v5.hf")
+model.load_weights("Model-v6.hf")
 
 image = dcm.read_file(root + "CPTAC-GBM/C3L-00016/11-15-1999-MR BRAIN WOW CONTRAST-47088/8-AX 3D SPGR-43615/000199.dcm").pixel_array
+# image = dcm.read_file(root + "CPTAC-GBM/C3L-00016/11-15-1999-MR BRAIN WOW CONTRAST-47088/8-AX 3D SPGR-43615/000199.dcm").pixel_array
 
 
 image = scipy.misc.imresize(image, (256, 256))

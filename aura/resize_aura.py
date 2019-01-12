@@ -20,7 +20,8 @@ while not os.path.isfile(path):
 array = rf(path)
 newArray = np.zeros((256,256,1))
 for image in range(array.shape[2]):
-    newArray.append(scipy.misc.imresize(cTS(array[:,:,image], (136,136)), (256,256)))
+    np.append(newArray, scipy.misc.imresize(cTS(array[:,:,image], (136,136)), (256,256)))
+    print(newArray.shape)
 
 newArray.tofile("{" + str(array.shape[0]) + "x" + str(array.shape[1]) + "x" + str(array.shape[2]) + "}Healthy.aura")
 
