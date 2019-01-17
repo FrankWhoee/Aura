@@ -25,10 +25,12 @@ num_classes = 2
 
 model = Sequential()
 
+fl,fw = 256,256
+
 # Convolutional layers and Max pooling
 model.add(Conv2D(32, kernel_size=(3, 3),
                  activation='relu',
-                 input_shape=(256,256,1)))
+                 input_shape=(fl,fw,1)))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Conv2D(64, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -44,17 +46,17 @@ model.add(MaxPooling2D(pool_size=(2, 2)))
 
 # Dense layers and output
 model.add(Flatten())
-model.add(Dense(1024, activation='relu'))
-model.add(Dropout(0.4))
 model.add(Dense(2048, activation='relu'))
 model.add(Dropout(0.8))
-model.add(Dense(1024, activation='relu'))
+model.add(Dense(4096, activation='relu'))
+model.add(Dropout(0.698736))
+model.add(Dense(2048, activation='relu'))
 model.add(Dense(num_classes, activation='softmax'))
 
-model.load_weights("Model-v6.hf")
-
-image = dcm.read_file(root + "CPTAC-GBM/C3L-00016/11-15-1999-MR BRAIN WOW CONTRAST-47088/8-AX 3D SPGR-43615/000199.dcm").pixel_array
+model.load_weights("Model-v7.hf")
+# image = dcm.read_file(root + "ChunkedHealthyTestset/{136x136x181}Chunk0.aura").pixel_array
 # image = dcm.read_file(root + "CPTAC-GBM/C3L-00016/11-15-1999-MR BRAIN WOW CONTRAST-47088/8-AX 3D SPGR-43615/000199.dcm").pixel_array
+image = dcm.read_file(root + "CPTAC-GBM/C3L-00016/11-15-1999-MR BRAIN WOW CONTRAST-47088/8-AX 3D SPGR-43615/000199.dcm").pixel_array
 
 
 image = scipy.misc.imresize(image, (256, 256))

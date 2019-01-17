@@ -2,16 +2,14 @@ import pydicom as dicom
 import os, numpy, sys, time
 from matplotlib import pyplot as plt
 from aura import extractor_util as eu
-
+import scipy.misc
 sys.stderr.write("WARNING: All .dcm files must have the same image dimensions.\n")
 time.sleep(0.01)
 # path_data = input("Path to folder containing all .dcm files: ")
 newFilename = input("Filename to dump information into: ")
-path_data = "../Aura_Data/Unextracted/IvyGAP/W1"
-if "{256x256x70220}.aura" not in newFilename:
+path_data = "../../Aura_Data/Unextracted/REMBRANDT"
+if ".aura" not in newFilename:
     newFilename += ".aura"
-
-time.sleep(5)
 
 lstFilesDCM = []
 print("Reading path...")
@@ -49,9 +47,9 @@ for filenameDCM in lstFilesDCM:
     #     plt.show()
     # store the raw image data
     try:
-        ArrayDicom[:, :, lstFilesDCM.index(filenameDCM)] = ds.pixel_array
+        ArrayDicom[:, :, lstFilesDCM.index(filenameDCM)] = scipy.misc.imresize(ds.pixel_array, (256,256))
     except:
-        ArrayDicom[:, :, lstFilesDCM.index(filenameDCM)] = eu.convertToSize(ds.pixel_array, ConstPixelDims[0:2])
+        print(ds.pixel_array.shape)
     sys.stdout.write('\r')
     bar = ""
     for x in range((int)((image_num / len(lstFilesDCM)) * progress_bar_length)):

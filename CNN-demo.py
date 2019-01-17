@@ -32,7 +32,7 @@ model = Sequential()
 # Convolutional layers and Max pooling
 model.add(Conv2D(32, kernel_size=(3, 3),
                  activation='relu',
-                 input_shape=(256,256,1)))
+                 input_shape=(fl,fw,1)))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Conv2D(64, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -48,17 +48,17 @@ model.add(MaxPooling2D(pool_size=(2, 2)))
 
 # Dense layers and output
 model.add(Flatten())
-model.add(Dense(1024, activation='relu'))
-model.add(Dropout(0.4))
 model.add(Dense(2048, activation='relu'))
 model.add(Dropout(0.8))
-model.add(Dense(1024, activation='relu'))
+model.add(Dense(4096, activation='relu'))
+model.add(Dropout(0.698736))
+model.add(Dense(2048, activation='relu'))
 model.add(Dense(num_classes, activation='softmax'))
 
-model.load_weights("Model-v6.hf")
+model.load_weights("Model-v7.hf")
 
-cancerous_test_data = read_file(path=cancerPath + cancerSize + "Chunk5.aura").T
-healthy_test_data = read_file(path=healthyPath + healthySize + "Chunk5.aura")
+cancerous_test_data = read_file(path=cancerPath + cancerSize + "Chunk12.aura").T
+healthy_test_data = read_file(path=healthyPath + healthySize + "Chunk12.aura")
 healthy_test_data = reshape(healthy_test_data, (fl,fw, hn)).T
 test_data = np.zeros((fn, fl,fw))
 for i in range(cn):
@@ -70,7 +70,7 @@ x_test = test_data
 
 x_test = test_data.reshape(fn,fl,fw,1)
 
-image = test_data[50]
+image = test_data[300]
 # image = eu.convertToSize(image,(136,136))
 # image = scipy.misc.imresize(image, (256, 256))
 

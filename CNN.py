@@ -23,13 +23,19 @@ healthyPath = root + "Dataset/"
 cancerSize = "{256x256x270}"
 healthySize = "{136x136x181}"
 
+trainSuffix = "Trainset"
+testSuffix = "Testset"
+cancerPrefix = "Cancer"
+healthyPrefix = "Healthy"
+fileExtension = ".aura"
+
 cl,cw,cn = pAD(cancerSize)
 hl,hw,hn = pAD(healthySize)
 fl, fw = max(cl, cw, hl, hw), max(cl, cw, hl, hw)
 fn = cn + hn
 # Set up data
-cancerous_train_data = read_file(path=cancerPath + cancerSize + "CancerTrainset.aura").T
-healthy_train_data = read_file(path=healthyPath+ healthySize + "HealthyTrainset.aura")
+cancerous_train_data = read_file(path=cancerPath + cancerSize + cancerPrefix + trainSuffix + fileExtension).T
+healthy_train_data = read_file(path=healthyPath+ healthySize + healthyPrefix + trainSuffix + fileExtension)
 healthy_train_data = reshape(healthy_train_data, (fl,fw,hn)).T
 train_data = np.zeros((fn, fl,fw))
 for i in range(cn):
@@ -51,8 +57,8 @@ for i,(data,label) in enumerate(training):
     train_data[i] = data
     train_label[i] = label
 
-cancerous_test_data = read_file(path=cancerPath + cancerSize + "CancerTestset.aura").T
-healthy_test_data = read_file(path=healthyPath + healthySize + "HealthyTestset.aura")
+cancerous_test_data = read_file(path=cancerPath + cancerSize + cancerPrefix + testSuffix + fileExtension).T
+healthy_test_data = read_file(path=healthyPath + healthySize + healthyPrefix + testSuffix + fileExtension)
 healthy_test_data = reshape(healthy_test_data, (fl,fw, hn)).T
 test_data = np.zeros((fn, fl,fw))
 for i in range(cn):
@@ -76,7 +82,7 @@ for i,(data,label) in enumerate(testing):
 
 # Set up CNN
 
-batch_size = 8
+batch_size = 2
 num_classes = 2
 epochs = 8
 
@@ -119,11 +125,11 @@ model.add(MaxPooling2D(pool_size=(2, 2)))
 
 # Dense layers and output
 model.add(Flatten())
-model.add(Dense(2048, activation='relu'))
-model.add(Dropout(0.8))
 model.add(Dense(4096, activation='relu'))
-model.add(Dropout(0.69874))
-model.add(Dense(2048, activation='relu'))
+model.add(Dropout(0.70))
+model.add(Dense(8192, activation='relu'))
+model.add(Dropout(0.6575))
+model.add(Dense(4096, activation='relu'))
 model.add(Dense(num_classes, activation='softmax'))
 
 model.compile(loss=keras.losses.categorical_crossentropy,

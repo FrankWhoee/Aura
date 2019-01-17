@@ -23,4 +23,4 @@ def break_aura(path,pieces):
         chunk.tofile(f)
     print("----------------- CHUNKING COMPLETE -----------------")
 
-break_aura("../Dataset/{136x136x2353}HealthyTrainset.aura", 13)
+break_aura("../../Aura_Data/ChunkedREMBRANDT/{256x256x5501}Chunk0.aura", 22)
