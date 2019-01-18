@@ -19,61 +19,86 @@ print(os.getcwd())
 root = "../Aura_Data/";
 cancerPath = root + "Dataset/"
 healthyPath = root + "Dataset/"
+tumorPath = root + "Dataset/"
 
 cancerSize = "{256x256x270}"
 healthySize = "{136x136x181}"
+tumorSize = "{256x256x250}"
 
 trainSuffix = "Trainset"
 testSuffix = "Testset"
 cancerPrefix = "Cancer"
 healthyPrefix = "Healthy"
+tumorPrefix = "Tumor"
 fileExtension = ".aura"
 
 cl,cw,cn = pAD(cancerSize)
 hl,hw,hn = pAD(healthySize)
+tl,tw,tn = pAD(tumorSize)
 fl, fw = max(cl, cw, hl, hw), max(cl, cw, hl, hw)
-fn = cn + hn
+fn = cn + hn + tn
 # Set up data
+
+# Load training data
 cancerous_train_data = read_file(path=cancerPath + cancerSize + cancerPrefix + trainSuffix + fileExtension).T
 healthy_train_data = read_file(path=healthyPath+ healthySize + healthyPrefix + trainSuffix + fileExtension)
 healthy_train_data = reshape(healthy_train_data, (fl,fw,hn)).T
+tumor_train_data = read_file(path=tumorPath + tumorSize + tumorPrefix + trainSuffix + fileExtension).T
+
+# Load testing data
+cancerous_test_data = read_file(path=cancerPath + cancerSize + cancerPrefix + testSuffix + fileExtension).T
+healthy_test_data = read_file(path=healthyPath + healthySize + healthyPrefix + testSuffix + fileExtension)
+healthy_test_data = reshape(healthy_test_data, (fl,fw, hn)).T
+tumor_test_data = read_file(path=tumorPath + tumorSize + tumorPrefix + testSuffix + fileExtension).T
+
+# Compile training data into one array
 train_data = np.zeros((fn, fl,fw))
 for i in range(cn):
     train_data[i] = cancerous_train_data[i]
 for i in range(hn):
     train_data[i + cn] = healthy_train_data[i]
+for i in range(tn):
+    train_data[i + cn + hn] = tumor_train_data[i]
 print(train_data.shape)
 
+# Compile testing data into one array
+test_data = np.zeros((fn, fl,fw))
+for i in range(cn):
+    test_data[i] = cancerous_test_data[i]
+for i in range(hn):
+    test_data[i + cn] = healthy_test_data[i]
+for i in range(tn):
+    test_data[i + cn + hn] = tumor_test_data[i]
+print(test_data.shape)
+
+# Label training data
 training = []
 for i in range(cn):
     training.append([train_data[i], 1])
 for i in range(hn):
     training.append([train_data[i + cn], 0])
+for i in range(tn):
+    training.append([train_data[i + cn + hn], 2])
 random.shuffle(training)
 
+# Label testing data
+testing = []
+for i in range(cn):
+    testing.append([test_data[i], 1])
+for i in range(hn):
+    testing.append([test_data[i + cn], 0])
+for i in range(tn):
+    testing.append([test_data[i + cn + hn], 2])
+random.shuffle(testing)
+
+# Shuffle training data
 train_label = np.zeros(fn)
 train_data = np.zeros(train_data.shape)
 for i,(data,label) in enumerate(training):
     train_data[i] = data
     train_label[i] = label
 
-cancerous_test_data = read_file(path=cancerPath + cancerSize + cancerPrefix + testSuffix + fileExtension).T
-healthy_test_data = read_file(path=healthyPath + healthySize + healthyPrefix + testSuffix + fileExtension)
-healthy_test_data = reshape(healthy_test_data, (fl,fw, hn)).T
-test_data = np.zeros((fn, fl,fw))
-for i in range(cn):
-    test_data[i] = cancerous_test_data[i]
-for i in range(hn):
-    test_data[i + cn] = healthy_test_data[i]
-print(test_data.shape)
-
-testing = []
-for i in range(cn):
-    testing.append([test_data[i], 1])
-for i in range(hn):
-    testing.append([test_data[i + cn], 0])
-random.shuffle(testing)
-
+# Shuffle testing data
 test_label = np.zeros(fn)
 test_data = np.zeros(test_data.shape)
 for i,(data,label) in enumerate(testing):
@@ -81,9 +106,8 @@ for i,(data,label) in enumerate(testing):
     test_label[i] = label
 
 # Set up CNN
-
 batch_size = 2
-num_classes = 2
+num_classes = 3
 epochs = 8
 
 # input image dimensions
@@ -126,9 +150,8 @@ model.add(MaxPooling2D(pool_size=(2, 2)))
 # Dense layers and output
 model.add(Flatten())
 model.add(Dense(4096, activation='relu'))
-model.add(Dropout(0.70))
+model.add(Dropout(0.1))
 model.add(Dense(8192, activation='relu'))
-model.add(Dropout(0.6575))
 model.add(Dense(4096, activation='relu'))
 model.add(Dense(num_classes, activation='softmax'))
 
