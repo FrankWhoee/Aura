@@ -21,9 +21,9 @@ cancerPath = root + "Dataset/"
 healthyPath = root + "Dataset/"
 tumorPath = root + "Dataset/"
 
-cancerSize = "{256x256x270}"
-healthySize = "{136x136x181}"
-tumorSize = "{256x256x250}"
+cancerSize = "{256x256x3511}"
+healthySize = "{136x136x2353}"
+tumorSize = "{256x256x5501}"
 
 trainSuffix = "Trainset"
 testSuffix = "Testset"
