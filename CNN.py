@@ -32,24 +32,30 @@ healthyPrefix = "Healthy"
 tumorPrefix = "Tumor"
 fileExtension = ".aura"
 
+trainTumor = True
+
 cl,cw,cn = pAD(cancerSize)
 hl,hw,hn = pAD(healthySize)
 tl,tw,tn = pAD(tumorSize)
 fl, fw = max(cl, cw, hl, hw), max(cl, cw, hl, hw)
-fn = cn + hn + tn
+fn = cn + hn
+if trainTumor:
+    fn += tn
 # Set up data
 
 # Load training data
 cancerous_train_data = read_file(path=cancerPath + cancerSize + cancerPrefix + trainSuffix + fileExtension).T
 healthy_train_data = read_file(path=healthyPath+ healthySize + healthyPrefix + trainSuffix + fileExtension)
 healthy_train_data = reshape(healthy_train_data, (fl,fw,hn)).T
-tumor_train_data = read_file(path=tumorPath + tumorSize + tumorPrefix + trainSuffix + fileExtension).T
+if trainTumor:
+    tumor_train_data = read_file(path=tumorPath + tumorSize + tumorPrefix + trainSuffix + fileExtension).T
 
 # Load testing data
 cancerous_test_data = read_file(path=cancerPath + cancerSize + cancerPrefix + testSuffix + fileExtension).T
 healthy_test_data = read_file(path=healthyPath + healthySize + healthyPrefix + testSuffix + fileExtension)
 healthy_test_data = reshape(healthy_test_data, (fl,fw, hn)).T
-tumor_test_data = read_file(path=tumorPath + tumorSize + tumorPrefix + testSuffix + fileExtension).T
+if trainTumor:
+    tumor_test_data = read_file(path=tumorPath + tumorSize + tumorPrefix + testSuffix + fileExtension).T
 
 # Compile training data into one array
 train_data = np.zeros((fn, fl,fw))
@@ -57,8 +63,9 @@ for i in range(cn):
     train_data[i] = cancerous_train_data[i]
 for i in range(hn):
     train_data[i + cn] = healthy_train_data[i]
-for i in range(tn):
-    train_data[i + cn + hn] = tumor_train_data[i]
+if trainTumor:
+    for i in range(tn):
+        train_data[i + cn + hn] = tumor_train_data[i]
 print(train_data.shape)
 
 # Compile testing data into one array
@@ -67,8 +74,9 @@ for i in range(cn):
     test_data[i] = cancerous_test_data[i]
 for i in range(hn):
     test_data[i + cn] = healthy_test_data[i]
-for i in range(tn):
-    test_data[i + cn + hn] = tumor_test_data[i]
+if trainTumor:
+    for i in range(tn):
+        test_data[i + cn + hn] = tumor_test_data[i]
 print(test_data.shape)
 
 # Label training data
@@ -77,9 +85,9 @@ for i in range(cn):
     training.append([train_data[i], 1])
 for i in range(hn):
     training.append([train_data[i + cn], 0])
-for i in range(tn):
-    training.append([train_data[i + cn + hn], 2])
-random.shuffle(training)
+if trainTumor:
+    for i in range(tn):
+        training.append([train_data[i + cn + hn], 2])
 
 # Label testing data
 testing = []
@@ -87,18 +95,26 @@ for i in range(cn):
     testing.append([test_data[i], 1])
 for i in range(hn):
     testing.append([test_data[i + cn], 0])
-for i in range(tn):
-    testing.append([test_data[i + cn + hn], 2])
-random.shuffle(testing)
+if trainTumor:
+    for i in range(tn):
+        testing.append([test_data[i + cn + hn], 2])
 
 # Shuffle training data
+random.shuffle(training)
+
+# Shuffle testing data
+random.shuffle(testing)
+
+# Separate training images and labels
 train_label = np.zeros(fn)
 train_data = np.zeros(train_data.shape)
 for i,(data,label) in enumerate(training):
     train_data[i] = data
+    # plt.imshow(data)
+    # plt.show()
     train_label[i] = label
 
-# Shuffle testing data
+# Separate testing images and labels
 test_label = np.zeros(fn)
 test_data = np.zeros(test_data.shape)
 for i,(data,label) in enumerate(testing):
@@ -107,8 +123,11 @@ for i,(data,label) in enumerate(testing):
 
 # Set up CNN
 batch_size = 2
-num_classes = 3
-epochs = 8
+if trainTumor:
+    num_classes = 3
+else:
+    num_classes = 2
+epochs = 20
 
 # input image dimensions
 img_rows, img_cols = fl,fw
@@ -149,10 +168,14 @@ model.add(MaxPooling2D(pool_size=(2, 2)))
 
 # Dense layers and output
 model.add(Flatten())
-model.add(Dense(4096, activation='relu'))
-model.add(Dropout(0.1))
-model.add(Dense(8192, activation='relu'))
-model.add(Dense(4096, activation='relu'))
+model.add(Dense(1024, activation='relu'))
+model.add(Dense(2048, activation='relu'))
+model.add(Dense(1024, activation='relu'))
+model.add(Dense(512, activation='relu'))
+model.add(Dense(256, activation='relu'))
+model.add(Dense(128, activation='relu'))
+model.add(Dense(64, activation='relu'))
+model.add(Dense(32, activation='relu'))
 model.add(Dense(num_classes, activation='softmax'))
 
 model.compile(loss=keras.losses.categorical_crossentropy,

@@ -7,7 +7,7 @@ sys.stderr.write("WARNING: All .dcm files must have the same image dimensions.\n
 time.sleep(0.01)
 # path_data = input("Path to folder containing all .dcm files: ")
 newFilename = input("Filename to dump information into: ")
-path_data = "../../Aura_Data/Unextracted/REMBRANDT"
+path_data = "../../Aura_Data/Unextracted/CPTAC-GBM"
 if ".aura" not in newFilename:
     newFilename += ".aura"
 
@@ -42,9 +42,10 @@ for filenameDCM in lstFilesDCM:
     # print("Extracting " + filenameDCM)
     # read the file
     ds = dicom.dcmread(filenameDCM)
+    # print(ds.tags)
     # if image_num > 400:
-    #     plt.imshow(ds.pixel_array)
-    #     plt.show()
+    # plt.imshow(ds.pixel_array)
+    # plt.show()
     # store the raw image data
     try:
         ArrayDicom[:, :, lstFilesDCM.index(filenameDCM)] = scipy.misc.imresize(ds.pixel_array, (256,256))
