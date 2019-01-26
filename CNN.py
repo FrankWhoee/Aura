@@ -21,9 +21,13 @@ cancerPath = root + "Dataset/"
 healthyPath = root + "Dataset/"
 tumorPath = root + "Dataset/"
 
-cancerSize = "{256x256x3511}"
-healthySize = "{136x136x2353}"
-tumorSize = "{256x256x5501}"
+# cancerSize = "{256x256x3511}"
+# healthySize = "{136x136x2353}"
+# tumorSize = "{256x256x5501}"
+
+cancerSize = "{256x256x270}"
+healthySize = "{136x136x181}"
+tumorSize = "{256x256x250}"
 
 trainSuffix = "Trainset"
 testSuffix = "Testset"
@@ -32,7 +36,7 @@ healthyPrefix = "Healthy"
 tumorPrefix = "Tumor"
 fileExtension = ".aura"
 
-trainTumor = True
+trainTumor = False
 
 cl,cw,cn = pAD(cancerSize)
 hl,hw,hn = pAD(healthySize)
@@ -123,12 +127,11 @@ for i,(data,label) in enumerate(testing):
 
 # Set up CNN
 batch_size = 2
-if trainTumor:
+if trainTumor == True:
     num_classes = 3
 else:
     num_classes = 2
-epochs = 20
-
+epochs = 8
 # input image dimensions
 img_rows, img_cols = fl,fw
 
@@ -142,7 +145,7 @@ x_test = test_data.reshape(fn,fl,fw,1)
 print('x_train shape:', x_train.shape)
 print(x_train.shape[0], 'train samples')
 print(x_test.shape[0], 'test samples')
-
+print(str(num_classes) + " classes set.")
 # convert class vectors to binary class matrices
 y_train = keras.utils.to_categorical(y_train, num_classes)
 y_test = keras.utils.to_categorical(y_test, num_classes)
@@ -159,20 +162,17 @@ model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Conv2D(128, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Conv2D(256, (3, 3), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(512, (3, 3), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(1024, (3, 3), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-
 
 # Dense layers and output
 model.add(Flatten())
 model.add(Dense(1024, activation='relu'))
+model.add(Dropout(0.1))
 model.add(Dense(2048, activation='relu'))
 model.add(Dense(1024, activation='relu'))
+model.add(Dropout(0.1))
 model.add(Dense(512, activation='relu'))
 model.add(Dense(256, activation='relu'))
+model.add(Dropout(0.1))
 model.add(Dense(128, activation='relu'))
 model.add(Dense(64, activation='relu'))
 model.add(Dense(32, activation='relu'))
