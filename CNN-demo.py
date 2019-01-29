@@ -1,19 +1,10 @@
 from __future__ import print_function
-import time
-import os
 import numpy as np
-import keras
-from keras.datasets import mnist
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten
-from keras.layers import Conv2D, MaxPooling2D
-import numpy
+from keras.models import load_model
 from aura.extractor_util import reshape
 from matplotlib import pyplot as plt
 from aura.extractor_util import parseAuraDimensions as pAD
 from aura.aura_loader import read_file
-from aura import extractor_util as eu
-import scipy.misc
 
 root = "../Aura_Data/";
 cancerPath = root + "ChunkedCancerTestset/"
@@ -27,35 +18,7 @@ fl, fw = max(cl, cw, hl, hw), max(cl, cw, hl, hw)
 fn = cn + hn
 num_classes = 2
 
-model = Sequential()
-
-# Convolutional layers and Max pooling
-model.add(Conv2D(32, kernel_size=(3, 3),
-                 activation='relu',
-                 input_shape=(fl,fw,1)))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(64, (3, 3), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(128, (3, 3), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(256, (3, 3), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(512, (3, 3), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(1024, (3, 3), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-
-
-# Dense layers and output
-model.add(Flatten())
-model.add(Dense(2048, activation='relu'))
-model.add(Dropout(0.8))
-model.add(Dense(4096, activation='relu'))
-model.add(Dropout(0.698736))
-model.add(Dense(2048, activation='relu'))
-model.add(Dense(num_classes, activation='softmax'))
-
-model.load_weights("Model-v7.hf")
+model = load_model("Model-v7.hf")
 
 cancerous_test_data = read_file(path=cancerPath + cancerSize + "Chunk12.aura").T
 healthy_test_data = read_file(path=healthyPath + healthySize + "Chunk12.aura")
