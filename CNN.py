@@ -17,21 +17,21 @@ from aura.aura_loader import read_file
 print("Modules imported.")
 print(os.getcwd())
 root = "../Aura_Data/";
-cancerPath = root + "Dataset/"
-healthyPath = root + "Dataset/"
-tumorPath = root + "Dataset/"
+cancerPath = root
+healthyPath = root
+tumorPath = root
 
 # cancerSize = "{256x256x3511}"
 # healthySize = "{136x136x2353}"
 # tumorSize = "{256x256x5501}"
 
-cancerSize = "{256x256x270}"
-healthySize = "{136x136x181}"
+cancerSize = "{256x256x70220}"
+healthySize = "{136x136x221182}"
 tumorSize = "{256x256x250}"
 
-trainSuffix = "Trainset"
-testSuffix = "Testset"
-cancerPrefix = "Cancer"
+trainSuffix = ""
+testSuffix = ""
+cancerPrefix = "RIDER"
 healthyPrefix = "Healthy"
 tumorPrefix = "Tumor"
 fileExtension = ".aura"
@@ -126,12 +126,12 @@ for i,(data,label) in enumerate(testing):
     test_label[i] = label
 
 # Set up CNN
-batch_size = 2
+batch_size = 64
 if trainTumor == True:
     num_classes = 3
 else:
     num_classes = 2
-epochs = 1
+epochs = 50
 # input image dimensions
 img_rows, img_cols = fl,fw
 
