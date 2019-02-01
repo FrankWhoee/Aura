@@ -46,8 +46,8 @@ fn = cn + hn
 if trainTumor:
     fn += tn
 # Set up data
-train_data = np.zeros((fn, fl,fw))
-test_data = np.zeros((fn, fl,fw))
+train_data = np.zeros((fn, fl,fw),dtype=np.float16)
+test_data = np.zeros((fn, fl,fw),dtype=np.float16)
 # Load training data
 cancerous_train_data = read_file(path=cancerPath + cancerSize + cancerPrefix + trainSuffix + fileExtension).T
 healthy_train_data = read_file(path=healthyPath+ healthySize + healthyPrefix + trainSuffix + fileExtension)
