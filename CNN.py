@@ -46,7 +46,8 @@ fn = cn + hn
 if trainTumor:
     fn += tn
 # Set up data
-
+train_data = np.zeros((fn, fl,fw))
+test_data = np.zeros((fn, fl,fw))
 # Load training data
 cancerous_train_data = read_file(path=cancerPath + cancerSize + cancerPrefix + trainSuffix + fileExtension).T
 healthy_train_data = read_file(path=healthyPath+ healthySize + healthyPrefix + trainSuffix + fileExtension)
@@ -62,7 +63,7 @@ if trainTumor:
     tumor_test_data = read_file(path=tumorPath + tumorSize + tumorPrefix + testSuffix + fileExtension).T
 
 # Compile training data into one array
-train_data = np.zeros((fn, fl,fw))
+
 for i in range(cn):
     train_data[i] = cancerous_train_data[i]
 for i in range(hn):
@@ -73,7 +74,7 @@ if trainTumor:
 print(train_data.shape)
 
 # Compile testing data into one array
-test_data = np.zeros((fn, fl,fw))
+
 for i in range(cn):
     test_data[i] = cancerous_test_data[i]
 for i in range(hn):
