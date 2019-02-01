@@ -3,7 +3,7 @@ import scipy.misc
 import matplotlib.pyplot as plt
 
 def convertToSize(input, size):
-    output = np.zeros(size)
+    output = np.zeros(size, dtype=np.float16)
     for row in range(output.shape[0]):
         for col in range(output.shape[1]):
             if row < len(input) and col < len(input[row]):
@@ -13,7 +13,7 @@ def convertToSize(input, size):
 
 
 def reshape(input,size):
-    output = np.zeros(size)
+    output = np.zeros(size, dtype=np.float16)
     for image in range(output.shape[2]):
         output[:,:,image] = scipy.misc.imresize(input[:,:,image],size[0:2])
 
