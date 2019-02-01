@@ -55,4 +55,4 @@ def percentise_aura(path,percent):
 
     print("----------------- CHUNKING COMPLETE -----------------")
 
-percentise_aura("../../Aura_Data/Unchunked/{136x136x221182}Healthy.aura", 0.99)
+percentise_aura("../../Aura_Data/{136x136x221182}Healthy.aura", 0.90)
