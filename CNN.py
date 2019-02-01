@@ -126,7 +126,7 @@ for i,(data,label) in enumerate(testing):
     test_label[i] = label
 
 # Set up CNN
-batch_size = 64
+batch_size = 32
 if trainTumor == True:
     num_classes = 3
 else:
