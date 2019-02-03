@@ -14,6 +14,9 @@ from aura.extractor_util import reshape
 from aura.extractor_util import parseAuraDimensions as pAD
 from aura.aura_loader import read_file
 
+# NOTE:
+# TUMOUR TRAINING IS DEPRECATED!
+
 print("Modules imported.")
 print(os.getcwd())
 root = "../Aura_Data/";
@@ -25,12 +28,15 @@ tumorPath = root
 # healthySize = "{136x136x2353}"
 # tumorSize = "{256x256x5501}"
 
-cancerSize = "{256x256x70220}"
-healthySize = "{136x136x221182}"
+cancerTrainSize = "{256x256x63198}"
+healthyTrainSize = "{136x136x199063}"
+cancerTestSize = "{256x256x7021}"
+healthyTestSize = "{136x136x22118}"
+
 tumorSize = "{256x256x250}"
 
-trainSuffix = ""
-testSuffix = ""
+trainSuffix = "Trainset"
+testSuffix = "Testset"
 cancerPrefix = "RIDER"
 healthyPrefix = "Healthy"
 tumorPrefix = "Tumor"
@@ -38,29 +44,40 @@ fileExtension = ".aura"
 
 trainTumor = False
 
-cl,cw,cn = pAD(cancerSize)
-hl,hw,hn = pAD(healthySize)
+# Training sizes
+cl,cw,cn = pAD(cancerTrainSize)
+hl,hw,hn = pAD(healthyTrainSize)
+
+# Testing sizes
+ctl,ctw,ctn = pAD(cancerTestSize)
+htl,htw,htn = pAD(healthyTestSize)
+
+# Tumor size @Deprecated
 tl,tw,tn = pAD(tumorSize)
+
+# Final sizes
 fl, fw = max(cl, cw, hl, hw), max(cl, cw, hl, hw)
 fn = cn + hn
+# No testing length/width because testing shapes must be the same as training shapes
+ftn = ctn + htn
 if trainTumor:
     fn += tn
 # Set up data
 train_data = np.zeros((fn, fl,fw),dtype=np.float16)
-# test_data = np.zeros((fn, fl,fw),dtype=np.float16)
+test_data = np.zeros((ftn, fl,fw),dtype=np.float16)
 # Load training data
-cancerous_train_data = read_file(path=cancerPath + cancerSize + cancerPrefix + trainSuffix + fileExtension).T
-healthy_train_data = read_file(path=healthyPath+ healthySize + healthyPrefix + trainSuffix + fileExtension)
+cancerous_train_data = read_file(path=cancerPath + cancerTrainSize + cancerPrefix + trainSuffix + fileExtension).T
+healthy_train_data = read_file(path=healthyPath+ healthyTrainSize + healthyPrefix + trainSuffix + fileExtension)
 healthy_train_data = reshape(healthy_train_data, (fl,fw,hn)).T
 if trainTumor:
     tumor_train_data = read_file(path=tumorPath + tumorSize + tumorPrefix + trainSuffix + fileExtension).T
 
 # Load testing data
-# cancerous_test_data = read_file(path=cancerPath + cancerSize + cancerPrefix + testSuffix + fileExtension).T
-# healthy_test_data = read_file(path=healthyPath + healthySize + healthyPrefix + testSuffix + fileExtension)
-# healthy_test_data = reshape(healthy_test_data, (fl,fw, hn)).T
-# if trainTumor:
-#     tumor_test_data = read_file(path=tumorPath + tumorSize + tumorPrefix + testSuffix + fileExtension).T
+cancerous_test_data = read_file(path=cancerPath + cancerTestSize + cancerPrefix + testSuffix + fileExtension).T
+healthy_test_data = read_file(path=healthyPath + healthyTestSize + healthyPrefix + testSuffix + fileExtension)
+healthy_test_data = reshape(healthy_test_data, (fl,fw, hn)).T
+if trainTumor:
+    tumor_test_data = read_file(path=tumorPath + tumorSize + tumorPrefix + testSuffix + fileExtension).T
 
 # Compile training data into one array
 
@@ -75,14 +92,14 @@ print(train_data.shape)
 
 # Compile testing data into one array
 
-# for i in range(cn):
-#     test_data[i] = cancerous_test_data[i]
-# for i in range(hn):
-#     test_data[i + cn] = healthy_test_data[i]
-# if trainTumor:
-#     for i in range(tn):
-#         test_data[i + cn + hn] = tumor_test_data[i]
-# print(test_data.shape)
+for i in range(ctn):
+    test_data[i] = cancerous_test_data[i]
+for i in range(htn):
+    test_data[i + ctn] = healthy_test_data[i]
+if trainTumor:
+    for i in range(tn):
+        test_data[i + ctn + htn] = tumor_test_data[i]
+print(test_data.shape)
 
 # Label training data
 training = []
@@ -95,20 +112,20 @@ if trainTumor:
         training.append([train_data[i + cn + hn], 2])
 
 # # Label testing data
-# testing = []
-# for i in range(cn):
-#     testing.append([test_data[i], 1])
-# for i in range(hn):
-#     testing.append([test_data[i + cn], 0])
-# if trainTumor:
-#     for i in range(tn):
-#         testing.append([test_data[i + cn + hn], 2])
+testing = []
+for i in range(ctn):
+    testing.append([test_data[i], 1])
+for i in range(htn):
+    testing.append([test_data[i + ctn], 0])
+if trainTumor:
+    for i in range(tn):
+        testing.append([test_data[i + cn + hn], 2])
 
 # Shuffle training data
 random.shuffle(training)
 
 # Shuffle testing data
-# random.shuffle(testing)
+random.shuffle(testing)
 
 # Separate training images and labels
 train_label = np.zeros(fn)
@@ -119,12 +136,12 @@ for i,(data,label) in enumerate(training):
     # plt.show()
     train_label[i] = label
 
-# # Separate testing images and labels
-# test_label = np.zeros(fn)
-# test_data = np.zeros(test_data.shape)
-# for i,(data,label) in enumerate(testing):
-#     test_data[i] = data
-#     test_label[i] = label
+# Separate testing images and labels
+test_label = np.zeros(fn)
+test_data = np.zeros(test_data.shape)
+for i,(data,label) in enumerate(testing):
+    test_data[i] = data
+    test_label[i] = label
 
 # Set up CNN
 batch_size = 32
@@ -132,20 +149,20 @@ if trainTumor == True:
     num_classes = 3
 else:
     num_classes = 2
-epochs = 50
+epochs = 10
 # input image dimensions
 img_rows, img_cols = fl,fw
 
 y_train = train_label.copy()
-y_test = train_label.copy()
+y_test = test_label.copy()
 
 x_train = train_data.reshape(fn,fl,fw,1)
-# x_test = test_data.reshape(fn,fl,fw,1)
+x_test = test_data.reshape(ftn,fl,fw,1)
 
 
 print('x_train shape:', x_train.shape)
 print(x_train.shape[0], 'train samples')
-# print(x_test.shape[0], 'test samples')
+print(x_test.shape[0], 'test samples')
 print(str(num_classes) + " classes set.")
 # convert class vectors to binary class matrices
 y_train = keras.utils.to_categorical(y_train, num_classes)
@@ -179,13 +196,14 @@ model.add(Dense(num_classes, activation='softmax'))
 
 model.compile(loss=keras.losses.categorical_crossentropy,
               optimizer=keras.optimizers.Adadelta(),
-              metrics=['accuracy'])
+              metrics=['accuracy'],
+              validation_data=(x_test,y_test))
 
 history = model.fit(x_train, y_train,
           batch_size=batch_size,
           epochs=epochs,
           verbose=1)
-score = model.evaluate(x_train, y_train, verbose=0)
+score = model.evaluate(x_test, y_test, verbose=0)
 finish_time = str(time.time())
 model.save("model"+finish_time[:finish_time.find(".")]+".hf")
 print('Test loss:', score[0])
