@@ -47,7 +47,7 @@ if trainTumor:
     fn += tn
 # Set up data
 train_data = np.zeros((fn, fl,fw),dtype=np.float16)
-test_data = np.zeros((fn, fl,fw),dtype=np.float16)
+# test_data = np.zeros((fn, fl,fw),dtype=np.float16)
 # Load training data
 cancerous_train_data = read_file(path=cancerPath + cancerSize + cancerPrefix + trainSuffix + fileExtension).T
 healthy_train_data = read_file(path=healthyPath+ healthySize + healthyPrefix + trainSuffix + fileExtension)
@@ -56,11 +56,11 @@ if trainTumor:
     tumor_train_data = read_file(path=tumorPath + tumorSize + tumorPrefix + trainSuffix + fileExtension).T
 
 # Load testing data
-cancerous_test_data = read_file(path=cancerPath + cancerSize + cancerPrefix + testSuffix + fileExtension).T
-healthy_test_data = read_file(path=healthyPath + healthySize + healthyPrefix + testSuffix + fileExtension)
-healthy_test_data = reshape(healthy_test_data, (fl,fw, hn)).T
-if trainTumor:
-    tumor_test_data = read_file(path=tumorPath + tumorSize + tumorPrefix + testSuffix + fileExtension).T
+# cancerous_test_data = read_file(path=cancerPath + cancerSize + cancerPrefix + testSuffix + fileExtension).T
+# healthy_test_data = read_file(path=healthyPath + healthySize + healthyPrefix + testSuffix + fileExtension)
+# healthy_test_data = reshape(healthy_test_data, (fl,fw, hn)).T
+# if trainTumor:
+#     tumor_test_data = read_file(path=tumorPath + tumorSize + tumorPrefix + testSuffix + fileExtension).T
 
 # Compile training data into one array
 
@@ -75,14 +75,14 @@ print(train_data.shape)
 
 # Compile testing data into one array
 
-for i in range(cn):
-    test_data[i] = cancerous_test_data[i]
-for i in range(hn):
-    test_data[i + cn] = healthy_test_data[i]
-if trainTumor:
-    for i in range(tn):
-        test_data[i + cn + hn] = tumor_test_data[i]
-print(test_data.shape)
+# for i in range(cn):
+#     test_data[i] = cancerous_test_data[i]
+# for i in range(hn):
+#     test_data[i + cn] = healthy_test_data[i]
+# if trainTumor:
+#     for i in range(tn):
+#         test_data[i + cn + hn] = tumor_test_data[i]
+# print(test_data.shape)
 
 # Label training data
 training = []
@@ -94,21 +94,21 @@ if trainTumor:
     for i in range(tn):
         training.append([train_data[i + cn + hn], 2])
 
-# Label testing data
-testing = []
-for i in range(cn):
-    testing.append([test_data[i], 1])
-for i in range(hn):
-    testing.append([test_data[i + cn], 0])
-if trainTumor:
-    for i in range(tn):
-        testing.append([test_data[i + cn + hn], 2])
+# # Label testing data
+# testing = []
+# for i in range(cn):
+#     testing.append([test_data[i], 1])
+# for i in range(hn):
+#     testing.append([test_data[i + cn], 0])
+# if trainTumor:
+#     for i in range(tn):
+#         testing.append([test_data[i + cn + hn], 2])
 
 # Shuffle training data
 random.shuffle(training)
 
 # Shuffle testing data
-random.shuffle(testing)
+# random.shuffle(testing)
 
 # Separate training images and labels
 train_label = np.zeros(fn)
@@ -119,12 +119,12 @@ for i,(data,label) in enumerate(training):
     # plt.show()
     train_label[i] = label
 
-# Separate testing images and labels
-test_label = np.zeros(fn)
-test_data = np.zeros(test_data.shape)
-for i,(data,label) in enumerate(testing):
-    test_data[i] = data
-    test_label[i] = label
+# # Separate testing images and labels
+# test_label = np.zeros(fn)
+# test_data = np.zeros(test_data.shape)
+# for i,(data,label) in enumerate(testing):
+#     test_data[i] = data
+#     test_label[i] = label
 
 # Set up CNN
 batch_size = 32
@@ -137,15 +137,15 @@ epochs = 50
 img_rows, img_cols = fl,fw
 
 y_train = train_label.copy()
-y_test = test_label.copy()
+y_test = train_label.copy()
 
 x_train = train_data.reshape(fn,fl,fw,1)
-x_test = test_data.reshape(fn,fl,fw,1)
+# x_test = test_data.reshape(fn,fl,fw,1)
 
 
 print('x_train shape:', x_train.shape)
 print(x_train.shape[0], 'train samples')
-print(x_test.shape[0], 'test samples')
+# print(x_test.shape[0], 'test samples')
 print(str(num_classes) + " classes set.")
 # convert class vectors to binary class matrices
 y_train = keras.utils.to_categorical(y_train, num_classes)
@@ -184,9 +184,8 @@ model.compile(loss=keras.losses.categorical_crossentropy,
 history = model.fit(x_train, y_train,
           batch_size=batch_size,
           epochs=epochs,
-          verbose=1,
-          validation_data=(x_test, y_test))
-score = model.evaluate(x_test, y_test, verbose=0)
+          verbose=1)
+score = model.evaluate(x_train, y_train, verbose=0)
 finish_time = str(time.time())
 model.save("model"+finish_time[:finish_time.find(".")]+".hf")
 print('Test loss:', score[0])
