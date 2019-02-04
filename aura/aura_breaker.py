@@ -2,6 +2,7 @@ import numpy as np
 from aura import aura_loader
 import os
 import time
+import random
 
 def break_aura(path,pieces):
     array = aura_loader.read_file(path)
@@ -12,7 +13,7 @@ def break_aura(path,pieces):
     print(array.shape)
     chunkSize = int(n/pieces)
     print("Chunking into " + str(chunkSize) + " sized pieces.")
-    chunk = np.zeros((l, w, chunkSize))
+    chunk = np.zeros((l, w, chunkSize), dtype=np.float16)
     for piece in range(pieces):
         print("Chunking piece " + str(piece))
         print("Extracting " + str(chunkSize * piece) + " to " + str(chunkSize * piece + chunkSize))
@@ -25,6 +26,7 @@ def break_aura(path,pieces):
 
 def percentise_aura(path,percent):
     array = aura_loader.read_file(path)
+    random.shuffle(array)
     filepath = "../ChunkedAura" + str(time.time())[5:10]
     print("Saving to " + filepath)
     os.mkdir(filepath)
@@ -43,16 +45,16 @@ def percentise_aura(path,percent):
     print("Chunking piece 1")
     for i in range(size1):
         chunk1[:,:,i] = array[:,:,i]
-    f1 = filepath + "/{" + str(l) + "x" + str(w) + "x" + str(size1.shape[2]) + "}Chunk1.aura"
+    f1 = filepath + "/{" + str(l) + "x" + str(w) + "x" + str(size1) + "}Chunk1.aura"
     print("Saving chunk1 to " + f1 + "\n")
     chunk1.tofile(f1)
 
     for i in range(size2):
         chunk2[:,:,i] = array[:,:,i + (size1)]
-    f2 = filepath + "/{" + str(l) + "x" + str(w) + "x" + str(size2.shape[2]) + "}Chunk1.aura"
+    f2 = filepath + "/{" + str(l) + "x" + str(w) + "x" + str(size2) + "}Chunk1.aura"
     print("Saving chunk1 to " + f2 + "\n")
     chunk2.tofile(f2)
 
     print("----------------- CHUNKING COMPLETE -----------------")
 
-percentise_aura("../../Aura_Data/{136x136x221182}Healthy.aura", 0.90)
+percentise_aura("../../Aura_Data/{256x256x70220}RIDER.aura", 0.90)
