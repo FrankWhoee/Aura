@@ -45,15 +45,15 @@ fileExtension = ".aura"
 trainTumor = False
 
 # Training sizes
-cl,cw,cn = pAD(cancerTrainSize)
-hl,hw,hn = pAD(healthyTrainSize)
+cl, cw, cn = pAD(cancerTrainSize)
+hl, hw, hn = pAD(healthyTrainSize)
 
 # Testing sizes
-ctl,ctw,ctn = pAD(cancerTestSize)
-htl,htw,htn = pAD(healthyTestSize)
+ctl, ctw, ctn = pAD(cancerTestSize)
+htl, htw, htn = pAD(healthyTestSize)
 
 # Tumor size @Deprecated
-tl,tw,tn = pAD(tumorSize)
+tl, tw, tn = pAD(tumorSize)
 
 # Final sizes
 fl, fw = max(cl, cw, hl, hw), max(cl, cw, hl, hw)
@@ -63,19 +63,19 @@ ftn = ctn + htn
 if trainTumor:
     fn += tn
 # Set up data
-train_data = np.zeros((fn, fl,fw),dtype=np.float16)
-test_data = np.zeros((ftn, fl,fw),dtype=np.float16)
+train_data = np.zeros((fn, fl, fw), dtype=np.float16)
+test_data = np.zeros((ftn, fl, fw), dtype=np.float16)
 # Load training data
 cancerous_train_data = read_file(path=cancerPath + cancerTrainSize + cancerPrefix + trainSuffix + fileExtension).T
-healthy_train_data = read_file(path=healthyPath+ healthyTrainSize + healthyPrefix + trainSuffix + fileExtension)
-healthy_train_data = reshape(healthy_train_data, (fl,fw,hn)).T
+healthy_train_data = read_file(path=healthyPath + healthyTrainSize + healthyPrefix + trainSuffix + fileExtension)
+healthy_train_data = reshape(healthy_train_data, (fl, fw, hn)).T
 if trainTumor:
     tumor_train_data = read_file(path=tumorPath + tumorSize + tumorPrefix + trainSuffix + fileExtension).T
 
 # Load testing data
 cancerous_test_data = read_file(path=cancerPath + cancerTestSize + cancerPrefix + testSuffix + fileExtension).T
 healthy_test_data = read_file(path=healthyPath + healthyTestSize + healthyPrefix + testSuffix + fileExtension)
-healthy_test_data = reshape(healthy_test_data, (fl,fw, htn)).T
+healthy_test_data = reshape(healthy_test_data, (fl, fw, htn)).T
 if trainTumor:
     tumor_test_data = read_file(path=tumorPath + tumorSize + tumorPrefix + testSuffix + fileExtension).T
 
@@ -130,16 +130,14 @@ random.shuffle(testing)
 # Separate training images and labels
 train_label = np.zeros(fn)
 train_data = np.zeros(train_data.shape)
-for i,(data,label) in enumerate(training):
+for i, (data, label) in enumerate(training):
     train_data[i] = data
-    # plt.imshow(data)
-    # plt.show()
     train_label[i] = label
 
 # Separate testing images and labels
 test_label = np.zeros(ftn)
 test_data = np.zeros(test_data.shape)
-for i,(data,label) in enumerate(testing):
+for i, (data, label) in enumerate(testing):
     test_data[i] = data
     test_label[i] = label
 
@@ -151,14 +149,13 @@ else:
     num_classes = 2
 epochs = 10
 # input image dimensions
-img_rows, img_cols = fl,fw
+img_rows, img_cols = fl, fw
 
 y_train = train_label.copy()
 y_test = test_label.copy()
 
-x_train = train_data.reshape(fn,fl,fw,1)
-x_test = test_data.reshape(ftn,fl,fw,1)
-
+x_train = train_data.reshape(fn, fl, fw, 1)
+x_test = test_data.reshape(ftn, fl, fw, 1)
 
 print('x_train shape:', x_train.shape)
 print(x_train.shape[0], 'train samples')
@@ -173,7 +170,7 @@ model = Sequential()
 # Convolutional layers and Max pooling
 model.add(Conv2D(32, kernel_size=(3, 3),
                  activation='relu',
-                 input_shape=(fl,fw,1)))
+                 input_shape=(fl, fw, 1)))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Conv2D(64, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -196,20 +193,22 @@ model.add(Dense(num_classes, activation='softmax'))
 
 model.compile(loss=keras.losses.categorical_crossentropy,
               optimizer=keras.optimizers.Adadelta(),
-              metrics=['accuracy'],
-              validation_data=(x_test,y_test))
+              metrics=['accuracy'])
 
 history = model.fit(x_train, y_train,
-          batch_size=batch_size,
-          epochs=epochs,
-          verbose=1)
+                    batch_size=batch_size,
+                    epochs=epochs,
+                    verbose=1,
+                    validation_data=(x_test, y_test))
 score = model.evaluate(x_test, y_test, verbose=0)
 finish_time = str(time.time())
-model.save("model"+finish_time[:finish_time.find(".")]+".hf")
+model.save("model" + finish_time[:finish_time.find(".")] + ".hf")
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
 
 plt.plot(history.history['loss'])
+print(history.history['loss'])
+print(history.history['val_loss'])
 plt.plot(history.history['val_loss'])
 plt.title('model loss')
 plt.ylabel('loss')
