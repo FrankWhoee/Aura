@@ -137,7 +137,7 @@ for i,(data,label) in enumerate(training):
     train_label[i] = label
 
 # Separate testing images and labels
-test_label = np.zeros(fn)
+test_label = np.zeros(ftn)
 test_data = np.zeros(test_data.shape)
 for i,(data,label) in enumerate(testing):
     test_data[i] = data
