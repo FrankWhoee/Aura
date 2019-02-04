@@ -75,7 +75,7 @@ if trainTumor:
 # Load testing data
 cancerous_test_data = read_file(path=cancerPath + cancerTestSize + cancerPrefix + testSuffix + fileExtension).T
 healthy_test_data = read_file(path=healthyPath + healthyTestSize + healthyPrefix + testSuffix + fileExtension)
-healthy_test_data = reshape(healthy_test_data, (fl,fw, hn)).T
+healthy_test_data = reshape(healthy_test_data, (fl,fw, htn)).T
 if trainTumor:
     tumor_test_data = read_file(path=tumorPath + tumorSize + tumorPrefix + testSuffix + fileExtension).T
 
