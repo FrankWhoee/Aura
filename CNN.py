@@ -3,10 +3,10 @@ import time
 import os
 import numpy as np
 import keras
-from keras.datasets import mnist
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
+from keras.callbacks import ModelCheckpoint
 import random
 import scipy.misc
 import matplotlib.pyplot as plt
@@ -195,7 +195,13 @@ model.compile(loss=keras.losses.categorical_crossentropy,
               optimizer=keras.optimizers.Adadelta(),
               metrics=['accuracy'])
 
+# checkpoint
+filepath="weights-improvement-{epoch:02d}-{val_acc:.2f}.hdf5"
+checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
+callbacks_list = [checkpoint]
+
 history = model.fit(x_train, y_train,
+                    callbacks=callbacks_list,
                     batch_size=batch_size,
                     epochs=epochs,
                     verbose=1,
