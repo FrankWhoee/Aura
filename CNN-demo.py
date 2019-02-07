@@ -18,7 +18,7 @@ fl, fw = max(cl, cw, hl, hw), max(cl, cw, hl, hw)
 fn = cn + hn
 num_classes = 2
 
-model = load_model("Model-v7.hf")
+model = load_model("Model-10-2.hdf5")
 
 cancerous_test_data = read_file(path=cancerPath + cancerSize + "Chunk12.aura").T
 healthy_test_data = read_file(path=healthyPath + healthySize + "Chunk12.aura")
@@ -33,9 +33,7 @@ x_test = test_data
 
 x_test = test_data.reshape(fn,fl,fw,1)
 
-image = test_data[300]
-# image = eu.convertToSize(image,(136,136))
-# image = scipy.misc.imresize(image, (256, 256))
+image = test_data[200]
 
 plt.imshow(image)
 plt.show()

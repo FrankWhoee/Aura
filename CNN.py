@@ -166,33 +166,33 @@ print(str(num_classes) + " classes set.")
 y_train = keras.utils.to_categorical(y_train, num_classes)
 y_test = keras.utils.to_categorical(y_test, num_classes)
 
-# model = Sequential()
-#
-# # Convolutional layers and Max pooling
-# model.add(Conv2D(32, kernel_size=(3, 3),
-#                  activation='relu',
-#                  input_shape=(fl, fw, 1)))
-# model.add(MaxPooling2D(pool_size=(2, 2)))
-# model.add(Conv2D(64, (3, 3), activation='relu'))
-# model.add(MaxPooling2D(pool_size=(2, 2)))
-# model.add(Conv2D(128, (3, 3), activation='relu'))
-# model.add(MaxPooling2D(pool_size=(2, 2)))
-# model.add(Conv2D(256, (3, 3), activation='relu'))
-#
-# # Dense layers and output
-# model.add(Flatten())
-# model.add(Dense(1024, activation='relu'))
-# model.add(Dropout(0.2))
-# model.add(Dense(2048, activation='relu'))
-# model.add(Dense(1024, activation='relu'))
-# model.add(Dense(512, activation='relu'))
-# model.add(Dense(256, activation='relu'))
-# model.add(Dense(128, activation='relu'))
-# model.add(Dense(64, activation='relu'))
-# model.add(Dense(32, activation='relu'))
-# model.add(Dense(num_classes, activation='softmax'))
+model = Sequential()
 
-model = load_model("Model-10-2.hdf5")
+# Convolutional layers and Max pooling
+model.add(Conv2D(32, kernel_size=(3, 3),
+                 activation='relu',
+                 input_shape=(fl, fw, 1)))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Conv2D(64, (3, 3), activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Conv2D(128, (3, 3), activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Conv2D(256, (3, 3), activation='relu'))
+
+# Dense layers and output
+model.add(Flatten())
+model.add(Dense(1024, activation='relu'))
+model.add(Dense(2048, activation='relu'))
+model.add(Dense(1024, activation='relu'))
+model.add(Dropout(0.1))
+model.add(Dense(512, activation='relu'))
+model.add(Dropout(0.2))
+model.add(Dense(256, activation='relu'))
+model.add(Dense(128, activation='relu'))
+model.add(Dropout(0.1))
+model.add(Dense(64, activation='relu'))
+model.add(Dense(32, activation='relu'))
+model.add(Dense(num_classes, activation='softmax'))
 
 model.compile(loss=keras.losses.categorical_crossentropy,
               optimizer=keras.optimizers.Adadelta(),

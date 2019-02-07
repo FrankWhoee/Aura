@@ -3,6 +3,7 @@ from aura import aura_loader
 import os
 import time
 import random
+from matplotlib import pyplot as plt
 
 def break_aura(path,pieces):
     array = aura_loader.read_file(path)
@@ -25,12 +26,12 @@ def break_aura(path,pieces):
     print("----------------- CHUNKING COMPLETE -----------------")
 
 def percentise_aura(path,percent):
-    array = aura_loader.read_file(path)
+    array = aura_loader.read_file(path).T
     random.shuffle(array)
     filepath = "../ChunkedAura" + str(time.time())[5:10]
     print("Saving to " + filepath)
     os.mkdir(filepath)
-    l,w,n = array.shape
+    n,l,w = array.shape
     print(array.shape)
     print("Chunking into " + str(percent * 100) +"% and " + str((1-percent) * 100) + "%")
     size1 = int(n * percent)
@@ -44,17 +45,20 @@ def percentise_aura(path,percent):
 
     print("Chunking piece 1")
     for i in range(size1):
-        chunk1[:,:,i] = array[:,:,i]
-    f1 = filepath + "/{" + str(l) + "x" + str(w) + "x" + str(size1) + "}Chunk1.aura"
+        chunk1[:,:,i] = array[i]
+    f1 = filepath + "/{" + str(chunk1.shape[0]) + "x" + str(chunk1.shape[1]) + "x" + str(chunk1.shape[2]) + "}Chunk1.aura"
     print("Saving chunk1 to " + f1 + "\n")
     chunk1.tofile(f1)
 
     for i in range(size2):
-        chunk2[:,:,i] = array[:,:,i + (size1)]
-    f2 = filepath + "/{" + str(l) + "x" + str(w) + "x" + str(size2) + "}Chunk1.aura"
+        chunk2[:,:,i] = array[i + (size1)]
+    f2 = filepath + "/{" + str(chunk2.shape[0]) + "x" + str(chunk2.shape[1]) + "x" + str(chunk2.shape[2]) + "}Chunk2.aura"
     print("Saving chunk1 to " + f2 + "\n")
     chunk2.tofile(f2)
 
     print("----------------- CHUNKING COMPLETE -----------------")
 
+
 percentise_aura("../../Aura_Data/{256x256x70220}RIDER.aura", 0.90)
+# percentise_aura("../../Aura_Data/{136x136x221182}Healthy.aura", 0.90)
+
