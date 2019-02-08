@@ -7,7 +7,7 @@ from keras.models import load_model
 
 root = "../Aura_Data/";
 
-model = load_model("Model-10-1.hdf5")
+model = load_model("weights-improvement-02-1.00.hdf5")
 # image = read_file(root + "ChunkedHealthyTestset/{136x136x181}Chunk1.aura").T[50]
 imageCancer = read_file(root + "{256x256x7021}RIDERTestset.aura").T[5021]
 imageHealthy = read_file(root + "{136x136x22118}HealthyTestset.aura").T[5021]
@@ -15,7 +15,7 @@ imageHealthy = read_file(root + "{136x136x22118}HealthyTestset.aura").T[5021]
 
 
 imageHealthy = scipy.misc.imresize(imageHealthy, (256, 256))
-imageCancer = scipy.misc.imresize(imageCancer, (256, 256))
+# imageCancer = scipy.misc.imresize(imageCancer, (256, 256))
 
 # plt.imshow(imageHealthy, cmap='gray')
 # plt.show()
