@@ -15,7 +15,7 @@ imageHealthy = read_file(root + "{136x136x22118}HealthyTestset.aura").T[5021]
 
 
 imageHealthy = scipy.misc.imresize(imageHealthy, (256, 256))
-# imageCancer = scipy.misc.imresize(imageCancer, (256, 256))
+imageCancer = scipy.misc.imresize(imageCancer, (256, 256))
 
 # plt.imshow(imageHealthy, cmap='gray')
 # plt.show()
