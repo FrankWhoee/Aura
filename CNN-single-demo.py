@@ -14,8 +14,8 @@ imageHealthy = read_file(root + "{136x136x22118}HealthyTestset.aura").T[5021]
 # image = dcm.read_file(root + "Unextracted/CPTAC-GBM/C3L-00016/11-15-1999-MR BRAIN WOW CONTRAST-47088/8-AX 3D SPGR-43615/000199.dcm").pixel_array
 
 
-imageHealthy = np.resize(imageHealthy, (256, 256))
-# imageCancer = scipy.misc.imresize(imageCancer, (256, 256))
+imageHealthy = imageHealthy.resize((256, 256))
+imageCancer = imageCancer.resize((256, 256))
 
 # plt.imshow(imageHealthy, cmap='gray')
 # plt.show()
