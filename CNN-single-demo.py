@@ -3,7 +3,6 @@ from matplotlib import pyplot as plt
 from aura.aura_loader import read_file
 import scipy.misc
 import numpy as np
-from PIL import Image
 from keras.models import load_model
 
 root = "../Aura_Data/";
@@ -15,8 +14,8 @@ imageHealthy = read_file(root + "{136x136x22118}HealthyTestset.aura").T[5021]
 # image = dcm.read_file(root + "Unextracted/CPTAC-GBM/C3L-00016/11-15-1999-MR BRAIN WOW CONTRAST-47088/8-AX 3D SPGR-43615/000199.dcm").pixel_array
 
 
-imageHealthy = np.array(Image.fromarray(imageHealthy).resize((256,256)))
-imageCancer = np.array(Image.fromarray(imageCancer).resize((256,256)))
+imageHealthy = scipy.misc.imresize(imageHealthy, (256, 256))
+# imageCancer = scipy.misc.imresize(imageCancer, (256, 256))
 
 # plt.imshow(imageHealthy, cmap='gray')
 # plt.show()
