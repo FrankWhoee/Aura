@@ -14,9 +14,7 @@ from aura.extractor_util import reshape
 from aura.extractor_util import parseAuraDimensions as pAD
 from aura.aura_loader import read_file
 from keras.models import load_model
-
-# NOTE:
-# TUMOUR TRAINING IS DEPRECATED!
+from time import time
 
 print("Modules imported.")
 print(os.getcwd())
@@ -43,122 +41,106 @@ healthyPrefix = "Healthy"
 tumorPrefix = "Tumor"
 fileExtension = ".aura"
 
-trainTumor = False
 
-# Training sizes
-cl, cw, cn = pAD(cancerTrainSize)
-hl, hw, hn = pAD(healthyTrainSize)
+# This function takes in a list of paths to extract data and converts it to a numpy array.
+def get_data(training_data_paths):
+    """
+    :param training_data_paths: a list of paths from which to extract data, shapes must be (l,w,n)
+    :return: two numpy arrays with shuffled data, shape of (n,l,w), of data type numpy.float16 and a numpy array of shape (n) with labels
 
-# Testing sizes
-ctl, ctw, ctn = pAD(cancerTestSize)
-htl, htw, htn = pAD(healthyTestSize)
+    n: number of images
 
-# Tumor size @Deprecated
-tl, tw, tn = pAD(tumorSize)
+    l: length of each image
 
-# Final sizes
-fl, fw = max(cl, cw, hl, hw), max(cl, cw, hl, hw)
-fn = cn + hn
-# No testing length/width because testing shapes must be the same as training shapes
-ftn = ctn + htn
-if trainTumor:
-    fn += tn
-# Set up data
-train_data = np.zeros((fn, fl, fw), dtype=np.float16)
-test_data = np.zeros((ftn, fl, fw), dtype=np.float16)
-# Load training data
-cancerous_train_data = read_file(path=cancerPath + cancerTrainSize + cancerPrefix + trainSuffix + fileExtension)
-healthy_train_data = read_file(path=healthyPath + healthyTrainSize + healthyPrefix + trainSuffix + fileExtension)
-cancerous_train_data = reshape(cancerous_train_data, (fl, fw, cn)).T
-healthy_train_data = reshape(healthy_train_data, (fl, fw, hn)).T
-if trainTumor:
-    tumor_train_data = read_file(path=tumorPath + tumorSize + tumorPrefix + trainSuffix + fileExtension).T
+    w: width of each image
+    """
+    init_time = time()
+    print("Retrieving data from " + str(training_data_paths.__len__()) + " paths.")
+    sizes = []
+    l, w = pAD(training_data_paths[0][training_data_paths[0].find("{"):training_data_paths[0].find("}") + 1])[0:2]
+    for filename in training_data_paths:
+        print("Recording dimensions of " + filename)
+        """
+        fl: file length
+        fw: file width
+        fn: file number of images
+        """
+        fl, fw, fn = pAD(filename[filename.find("{"):filename.find("}") + 1])
+        if fl > l:
+            l = fl
+        if fw > w:
+            w = fw
+        sizes.append(fn)
+    n = sum(sizes)
+    print(str(n) + " images found.")
+    # train_data is a numpy array of (n,l,w) with data type numpy.float16
+    train_data = np.zeros((n, l, w), dtype=np.float16)
 
-# Load testing data
-cancerous_test_data = read_file(path=cancerPath + cancerTestSize + cancerPrefix + testSuffix + fileExtension)
-healthy_test_data = read_file(path=healthyPath + healthyTestSize + healthyPrefix + testSuffix + fileExtension)
-cancerous_test_data = reshape(cancerous_test_data, (fl, fw, ctn)).T
-healthy_test_data = reshape(healthy_test_data, (fl, fw, htn)).T
-if trainTumor:
-    tumor_test_data = read_file(path=tumorPath + tumorSize + tumorPrefix + testSuffix + fileExtension).T
+    # Load in all data
+    print("Loading data.")
+    data = []
+    for size,path in enumerate(training_data_paths):
+        raw_data = read_file(path=path)
+        raw_data = reshape(raw_data, (l, w, sizes[size])).T
+        data.append(raw_data)
 
-# Compile training data into one array
+    # Compile data[] into output
+    print("Compiling data into one array.")
+    index_of_train_data = 0
+    for index, package in enumerate(data):
+        for image in package:
+            train_data[index_of_train_data] = image
+            index_of_train_data += 1
 
-for i in range(cn):
-    train_data[i] = cancerous_train_data[i]
-for i in range(hn):
-    train_data[i + cn] = healthy_train_data[i]
-if trainTumor:
-    for i in range(tn):
-        train_data[i + cn + hn] = tumor_train_data[i]
-print(train_data.shape)
+    # Label training data
+    print("Labelling data.")
+    data = []
+    index_of_train_data = 0
+    for size_index in range(sizes.__len__()):
+        for index in range(sizes[size_index]):
+            data.append((train_data[index_of_train_data], size_index))
+            index_of_train_data += 1
 
-# Compile testing data into one array
+    print("Shuffling data.")
+    random.shuffle(data)
 
-for i in range(ctn):
-    test_data[i] = cancerous_test_data[i]
-for i in range(htn):
-    test_data[i + ctn] = healthy_test_data[i]
-if trainTumor:
-    for i in range(tn):
-        test_data[i + ctn + htn] = tumor_test_data[i]
-print(test_data.shape)
+    print("Separating labels.")
+    # Separate training images and labels
+    labels = np.zeros(n)
+    train_data = np.zeros((n, l, w))
+    for i, (data, label) in enumerate(data):
+        train_data[i] = data
+        labels[i] = label
 
-# Label training data
-training = []
-for i in range(cn):
-    training.append([train_data[i], 1])
-for i in range(hn):
-    training.append([train_data[i + cn], 0])
-if trainTumor:
-    for i in range(tn):
-        training.append([train_data[i + cn + hn], 2])
+    final_time = time()
+    duration = final_time - init_time
+    print("Data retrieval complete. Process took " + str(duration) + " seconds.")
+    return train_data, labels
 
-# # Label testing data
-testing = []
-for i in range(ctn):
-    testing.append([test_data[i], 1])
-for i in range(htn):
-    testing.append([test_data[i + ctn], 0])
-if trainTumor:
-    for i in range(tn):
-        testing.append([test_data[i + cn + hn], 2])
 
-# Shuffle training data
-random.shuffle(training)
+# Prepare paths
+root = "../Aura_Data/"
+train_paths = [root + "{136x136x199063}HealthyTrainset.aura", root + "{256x256x63198}RIDERTrainset.aura"]
+test_paths = [root + "{136x136x22118}HealthyTestset.aura", root + "{256x256x7021}RIDERTestset.aura"]
 
-# Shuffle testing data
-random.shuffle(testing)
+train_data, train_label = get_data(train_paths)
+test_data, test_label = get_data(test_paths)
 
-# Separate training images and labels
-train_label = np.zeros(fn)
-train_data = np.zeros(train_data.shape)
-for i, (data, label) in enumerate(training):
-    train_data[i] = data
-    train_label[i] = label
-
-# Separate testing images and labels
-test_label = np.zeros(ftn)
-test_data = np.zeros(test_data.shape)
-for i, (data, label) in enumerate(testing):
-    test_data[i] = data
-    test_label[i] = label
+train_n, train_l, train_w = train_data.shape
+test_n, test_l, test_w = test_data.shape
 
 # Set up CNN
 batch_size = 32
-if trainTumor == True:
-    num_classes = 3
-else:
-    num_classes = 2
+num_classes = 3
 epochs = 10
 # input image dimensions
-img_rows, img_cols = fl, fw
+img_rows, img_cols = train_l, train_w
 
 y_train = train_label.copy()
 y_test = test_label.copy()
 
-x_train = train_data.reshape(fn, fl, fw, 1)
-x_test = test_data.reshape(ftn, fl, fw, 1)
+x_train = train_data.reshape(train_n, train_l, train_w, 1)
+x_test = test_data.reshape(test_n, test_l, test_w, 1)
 
 print('x_train shape:', x_train.shape)
 print(x_train.shape[0], 'train samples')
@@ -173,7 +155,7 @@ model = Sequential()
 # Convolutional layers and Max pooling
 model.add(Conv2D(32, kernel_size=(3, 3),
                  activation='relu',
-                 input_shape=(fl, fw, 1)))
+                 input_shape=(train_l, train_w, 1)))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Conv2D(64, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -202,7 +184,7 @@ model.compile(loss=keras.losses.categorical_crossentropy,
               metrics=['accuracy'])
 
 # checkpoint
-filepath="weights-improvement-{epoch:02d}-{val_acc:.2f}.hdf5"
+filepath = "weights-improvement-{epoch:02d}-{val_acc:.2f}.hdf5"
 checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
 callbacks_list = [checkpoint]
 

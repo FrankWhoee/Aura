@@ -7,7 +7,7 @@ sys.stderr.write("WARNING: All .dcm files must have the same image dimensions.\n
 time.sleep(0.01)
 # path_data = input("Path to folder containing all .dcm files: ")
 newFilename = input("Filename to dump information into: ")
-path_data = "../../Aura_Data/Unextracted/CPTAC-GBM"
+path_data = "../../Aura_Data/Unextracted/Brain-Tumor-Progression"
 if ".aura" not in newFilename:
     newFilename += ".aura"
 
@@ -33,6 +33,8 @@ z = numpy.arange(0.0, (ConstPixelDims[2]+1)*ConstPixelSpacing[2], ConstPixelSpac
 ConstPixelDims = (256,256,len(lstFilesDCM))
 ArrayDicom = numpy.zeros(ConstPixelDims, dtype=RefDs.pixel_array.dtype)
 
+newFilename = "{" + str(ArrayDicom.shape[0]) + "x" + str(ArrayDicom.shape[1]) + "x" + str(ArrayDicom.shape[2]) + "}" + newFilename
+print("Saving to " + newFilename)
 # loop through all the DICOM files
 print("Loading images into numpy array...")
 image_num = 0

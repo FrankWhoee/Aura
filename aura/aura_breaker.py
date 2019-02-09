@@ -59,6 +59,6 @@ def percentise_aura(path,percent):
     print("----------------- CHUNKING COMPLETE -----------------")
 
 
-percentise_aura("../../Aura_Data/{256x256x70220}RIDER.aura", 0.90)
+percentise_aura("{256x256x8798}btp.aura", 0.90)
 # percentise_aura("../../Aura_Data/{136x136x221182}Healthy.aura", 0.90)
 
