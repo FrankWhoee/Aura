@@ -120,8 +120,8 @@ def get_data(training_data_paths):
 
 # Prepare paths
 root = "../Aura_Data/"
-train_paths = [root + "{136x136x199063}HealthyTrainset.aura", root + "{256x256x63198}RIDERTrainset.aura"]
-test_paths = [root + "{136x136x22118}HealthyTestset.aura", root + "{256x256x7021}RIDERTestset.aura"]
+train_paths = [root + "{136x136x199063}HealthyTrainset.aura", root + "{256x256x63198}RIDERTrainset.aura", root + "{256x256x7918}BTPTrainset.aura"]
+test_paths = [root + "{136x136x22118}HealthyTestset.aura", root + "{256x256x7021}RIDERTestset.aura",  root + "{256x256x879}BTPTestset.aura"]
 
 train_data, train_label = get_data(train_paths)
 test_data, test_label = get_data(test_paths)
