@@ -67,15 +67,17 @@ if trainTumor:
 train_data = np.zeros((fn, fl, fw), dtype=np.float16)
 test_data = np.zeros((ftn, fl, fw), dtype=np.float16)
 # Load training data
-cancerous_train_data = read_file(path=cancerPath + cancerTrainSize + cancerPrefix + trainSuffix + fileExtension).T
+cancerous_train_data = read_file(path=cancerPath + cancerTrainSize + cancerPrefix + trainSuffix + fileExtension)
 healthy_train_data = read_file(path=healthyPath + healthyTrainSize + healthyPrefix + trainSuffix + fileExtension)
+cancerous_train_data = reshape(cancerous_train_data, (fl, fw, cn)).T
 healthy_train_data = reshape(healthy_train_data, (fl, fw, hn)).T
 if trainTumor:
     tumor_train_data = read_file(path=tumorPath + tumorSize + tumorPrefix + trainSuffix + fileExtension).T
 
 # Load testing data
-cancerous_test_data = read_file(path=cancerPath + cancerTestSize + cancerPrefix + testSuffix + fileExtension).T
+cancerous_test_data = read_file(path=cancerPath + cancerTestSize + cancerPrefix + testSuffix + fileExtension)
 healthy_test_data = read_file(path=healthyPath + healthyTestSize + healthyPrefix + testSuffix + fileExtension)
+cancerous_test_data = reshape(cancerous_test_data, (fl, fw, ctn)).T
 healthy_test_data = reshape(healthy_test_data, (fl, fw, htn)).T
 if trainTumor:
     tumor_test_data = read_file(path=tumorPath + tumorSize + tumorPrefix + testSuffix + fileExtension).T
