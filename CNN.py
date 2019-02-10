@@ -118,10 +118,15 @@ def get_data(training_data_paths):
     return train_data, labels
 
 
-# Prepare paths
-root = "../Aura_Data/"
-train_paths = [root + "{136x136x199063}HealthyTrainset.aura", root + "{256x256x63198}RIDERTrainset.aura", root + "{256x256x7918}BTPTrainset.aura"]
-test_paths = [root + "{136x136x22118}HealthyTestset.aura", root + "{256x256x7021}RIDERTestset.aura",  root + "{256x256x879}BTPTestset.aura"]
+# # Prepare paths
+# root = "../Aura_Data/"
+# train_paths = [root + "{136x136x199063}HealthyTrainset.aura", root + "{256x256x63198}RIDERTrainset.aura", root + "{256x256x7918}BTPTrainset.aura"]
+# test_paths = [root + "{136x136x22118}HealthyTestset.aura", root + "{256x256x7021}RIDERTestset.aura",  root + "{256x256x879}BTPTestset.aura"]
+
+# # Prepare paths
+root = "../Aura_Data/Chunked/Dataset/"
+train_paths = [root + "{136x136x181}HealthyTrainset.aura", root + "{256x256x270}CancerTrainset.aura"]
+test_paths = [root + "{136x136x181}HealthyTestset.aura", root + "{256x256x270}CancerTestset.aura"]
 
 train_data, train_label = get_data(train_paths)
 test_data, test_label = get_data(test_paths)
@@ -153,15 +158,15 @@ y_test = keras.utils.to_categorical(y_test, num_classes)
 model = Sequential()
 
 # Convolutional layers and Max pooling
-model.add(Conv2D(32, kernel_size=(32, 16),
+model.add(Conv2D(32, kernel_size=(16, 16),
                  activation='relu',
                  input_shape=(train_l, train_w, 1)))
-model.add(MaxPooling2D(pool_size=(16, 32)))
-model.add(Conv2D(64, (16, 16), activation='relu'))
-model.add(MaxPooling2D(pool_size=(8, 16)))
-model.add(Conv2D(128, (8, 8), activation='relu'))
 model.add(MaxPooling2D(pool_size=(8, 8)))
-model.add(Conv2D(256, (4, 4), activation='relu'))
+model.add(Conv2D(64, (4, 4), activation='relu'))
+model.add(MaxPooling2D(pool_size=(4, 4)))
+model.add(Conv2D(128, (2, 2), activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Conv2D(256, (2, 2), activation='relu'))
 
 # Dense layers and output
 model.add(Flatten())
