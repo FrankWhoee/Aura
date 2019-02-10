@@ -153,15 +153,15 @@ y_test = keras.utils.to_categorical(y_test, num_classes)
 model = Sequential()
 
 # Convolutional layers and Max pooling
-model.add(Conv2D(32, kernel_size=(3, 3),
+model.add(Conv2D(32, kernel_size=(32, 16),
                  activation='relu',
                  input_shape=(train_l, train_w, 1)))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(64, (3, 3), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(128, (3, 3), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(256, (3, 3), activation='relu'))
+model.add(MaxPooling2D(pool_size=(16, 32)))
+model.add(Conv2D(64, (16, 16), activation='relu'))
+model.add(MaxPooling2D(pool_size=(8, 16)))
+model.add(Conv2D(128, (8, 8), activation='relu'))
+model.add(MaxPooling2D(pool_size=(8, 8)))
+model.add(Conv2D(256, (4, 4), activation='relu'))
 
 # Dense layers and output
 model.add(Flatten())
