@@ -4,30 +4,39 @@ from aura.aura_loader import read_file
 import scipy.misc
 import numpy as np
 from keras.models import load_model
+from aura.decode import decode
+from aura.decode import preprocess
+from aura.decode import view_image as view
+
 
 root = "../Aura_Data/Dataset/";
 
 model = load_model("Model-11-1.hf")
 # image = read_file(root + "ChunkedHealthyTestset/{136x136x181}Chunk1.aura").T[50]
-imageCancer = read_file(root + "{256x256x7021}RIDERTestset.aura").T[5021]
+imageCancer = read_file(root + "{256x256x7021}RIDERTestset.aura").T[5000]
 imageHealthy = read_file(root + "{136x136x22118}HealthyTestset.aura").T[5021]
 imageBTP = read_file(root + "{256x256x879}BTPTestset.aura").T[50]
 # image = dcm.read_file(root + "Unextracted/CPTAC-GBM/C3L-00016/11-15-1999-MR BRAIN WOW CONTRAST-47088/8-AX 3D SPGR-43615/000199.dcm").pixel_array
 
+print("")
 
-imageHealthy = scipy.misc.imresize(imageHealthy, (256, 256))
-imageCancer = scipy.misc.imresize(imageCancer, (256, 256))
-imageBTP = scipy.misc.imresize(imageBTP, (256, 256))
+all_images = [imageHealthy, imageCancer, imageBTP]
+all_predictions = []
 
-plt.imshow(imageHealthy.astype(np.float32), cmap='gray')
-plt.show()
-# print(type(imageCancer))
-plt.imshow(imageCancer.astype(np.float32), cmap='gray')
-plt.show()
+for index, image in enumerate(all_images):
+    view(image)
+    all_images[index] = preprocess(image)
 
-plt.imshow(imageBTP.astype(np.float32), cmap='gray')
-plt.show()
+for index, image in enumerate(all_images):
+    all_predictions.append(decode(model.predict(image)))
 
-print("Healthy prediction: " + str(model.predict(imageHealthy.reshape(1,256,256,1))))
-print("Cancer prediction: " + str(model.predict(imageCancer.reshape(1,256,256,1))))
-print("BTP prediction: " + str(model.predict(imageBTP.reshape(1,256,256,1))))
+for i,prediction in enumerate(all_predictions):
+    if prediction[0][1] > 0.5:
+        print("Patient "+str(i)+" is healthy.")
+        print("Confidence: " + str(prediction[0][1] * 100) + "%\n")
+    elif prediction[1][1] > 0.5:
+        print("Patient " + str(i) + " has GBM.")
+        print("Confidence: " + str(prediction[1][1] * 100) + "%\n")
+    elif prediction[2][1] > 0.5:
+        print("Patient " + str(i) + " has GBM.")
+        print("Confidence: " + str(prediction[2][1] * 100) + "%\n")
