@@ -1,4 +1,3 @@
-# Aura
 <img src="https://raw.githubusercontent.com/FrankWhoee/Aura/master/aura.png" alt="Aura Logo"/>
 <br>
 
