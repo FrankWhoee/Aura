@@ -1,5 +1,5 @@
 # Aura
-<img src="https://raw.githubusercontent.com/FrankWhoee/Aura/master/aura.png" alt="drawing"/>
+<img src="https://raw.githubusercontent.com/FrankWhoee/Aura/master/aura.png" alt="Aura Logo"/>
 <br>
 
 # Early Detection of Glioblastoma Multiforme Brain Cancer through the Implementation of Convolutional Neural Networks on MRI Imaging
