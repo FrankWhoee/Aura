@@ -1,8 +1,5 @@
 from __future__ import print_function
-from matplotlib import pyplot as plt
 from aura.aura_loader import read_file
-import scipy.misc
-import numpy as np
 from keras.models import load_model
 from aura.decode import decode
 from aura.decode import preprocess
