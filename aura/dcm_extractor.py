@@ -1,15 +1,14 @@
 import pydicom as dicom
 import os, numpy, sys, time
-from matplotlib import pyplot as plt
-from aura import extractor_util as eu
 import scipy.misc
-sys.stderr.write("WARNING: All .dcm files must have the same image dimensions.\n")
-time.sleep(0.01)
-# path_data = input("Path to folder containing all .dcm files: ")
-newFilename = input("Filename to dump information into: ")
-path_data = "../../Aura_Data/Unextracted/Brain-Tumor-Progression"
-if ".aura" not in newFilename:
-    newFilename += ".aura"
+
+path_data = input("Path to folder containing all .dcm files: ")
+new_filename = input("Filename to dump information into: ")
+resize_l = input("Length to resize images to:")
+resize_w = input("Width to resize images to:")
+
+if ".aura" not in new_filename:
+    new_filename += ".aura"
 
 lstFilesDCM = []
 print("Reading path...")
@@ -30,27 +29,21 @@ ConstPixelSpacing = (float(RefDs.PixelSpacing[0]), float(RefDs.PixelSpacing[1]),
 x = numpy.arange(0.0, (ConstPixelDims[0]+1)*ConstPixelSpacing[0], ConstPixelSpacing[0])
 y = numpy.arange(0.0, (ConstPixelDims[1]+1)*ConstPixelSpacing[1], ConstPixelSpacing[1])
 z = numpy.arange(0.0, (ConstPixelDims[2]+1)*ConstPixelSpacing[2], ConstPixelSpacing[2])
-ConstPixelDims = (256,256,len(lstFilesDCM))
-ArrayDicom = numpy.zeros(ConstPixelDims, dtype=RefDs.pixel_array.dtype)
+ConstPixelDims = (resize_l, resize_w, len(lstFilesDCM))
+array_dicom = numpy.zeros(ConstPixelDims, dtype=RefDs.pixel_array.dtype)
 
-newFilename = "{" + str(ArrayDicom.shape[0]) + "x" + str(ArrayDicom.shape[1]) + "x" + str(ArrayDicom.shape[2]) + "}" + newFilename
-print("Saving to " + newFilename)
+new_filename = "{" + str(array_dicom.shape[0]) + "x" + str(array_dicom.shape[1]) + "x" + str(array_dicom.shape[2]) + "}" + new_filename
+print("Saving to " + new_filename)
+
 # loop through all the DICOM files
 print("Loading images into numpy array...")
 image_num = 0
-progress_bar_length = 50;
+progress_bar_length = 50
 
 for filenameDCM in lstFilesDCM:
-    # print("Extracting " + filenameDCM)
-    # read the file
     ds = dicom.dcmread(filenameDCM)
-    # print(ds.tags)
-    # if image_num > 400:
-    # plt.imshow(ds.pixel_array)
-    # plt.show()
-    # store the raw image data
     try:
-        ArrayDicom[:, :, lstFilesDCM.index(filenameDCM)] = scipy.misc.imresize(ds.pixel_array, (256,256))
+        array_dicom[:, :, lstFilesDCM.index(filenameDCM)] = scipy.misc.imresize(ds.pixel_array, (256, 256))
     except:
         print(ds.pixel_array.shape)
     sys.stdout.write('\r')
@@ -64,7 +57,5 @@ for filenameDCM in lstFilesDCM:
     sys.stdout.flush()
     image_num += 1
 
-ArrayDicom.tofile(newFilename)
+array_dicom.tofile(new_filename)
 print("\n\n----------------------- DATA EXTRACTION COMPLETE. -----------------------")
-print("Your matrix dimensions are (length, width, number of images): ", ConstPixelDims)
-

@@ -1,5 +1,5 @@
 import os
-
+# Deprecated class
 # This python script was used to extract all the nii files from a download from humanconnectome
 # To use it:
 # 1. Dump all of your data into one folder named Aura_Data/Healthy

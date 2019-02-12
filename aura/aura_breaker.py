@@ -3,9 +3,14 @@ from aura import aura_loader
 import os
 import time
 import random
-from matplotlib import pyplot as plt
 
 def break_aura(path,pieces):
+    """
+    Breaks an aura file into smaller chunks. Saves chunks to local folders.
+
+    :param path:  A string type of the path to the aura file that is being chunked.
+    :param pieces: An integer type of how many pieces should result
+    """
     array = aura_loader.read_file(path)
     filepath = "../ChunkedAura" + str(time.time())[5:10]
     print("Saving to " + filepath)
@@ -25,7 +30,14 @@ def break_aura(path,pieces):
         chunk.tofile(f)
     print("----------------- CHUNKING COMPLETE -----------------")
 
+
 def percentise_aura(path,percent):
+    """
+    Breaks an aura file into two pieces of percent sizes.
+
+    :param path: A string type of the path to the aura file that is being chunked.
+    :param percent: A float or double type of the percentage that should be in the first chunk.
+    """
     array = aura_loader.read_file(path).T
     random.shuffle(array)
     filepath = "../ChunkedAura" + str(time.time())[5:10]
@@ -57,8 +69,4 @@ def percentise_aura(path,percent):
     chunk2.tofile(f2)
 
     print("----------------- CHUNKING COMPLETE -----------------")
-
-
-percentise_aura("{256x256x8798}btp.aura", 0.90)
-# percentise_aura("../../Aura_Data/{136x136x221182}Healthy.aura", 0.90)
 
