@@ -13,3 +13,5 @@
 | ------- | -------- | ---- | ------------ |
 | Training  | 0.9897 | 0.0380  | 270179  |
 | Testing  | 0.9964  | 0.0149  | 30018 |
+
+#### Project Aura supports open source! We support open source knowledge and code.
