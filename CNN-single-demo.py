@@ -33,7 +33,7 @@ def query_user(question, n, min=0):
     :return: Integer type
     """
 
-    user_question = question + " (" + str(min) + "-" + str(n) + ")"
+    user_question = question + " (" + str(min) + "-" + str(n) + "): "
     image_index = input(user_question)
     while not image_index.isdigit() or int(image_index) > n or int(image_index) < 0:
         stderr.write("\nPlease enter a number between "+str(min)+" and " + str(n) + "\n")
@@ -43,9 +43,13 @@ def query_user(question, n, min=0):
 
 
 # Query users for input
-cancer_image_index = query_user("Choose image from cancerous test set", cn - 1)
-healthy_image_index = query_user("Choose image from healthy test set", hn - 1)
-btp_image_index = query_user("Choose image from another cancerous test set", bn - 1)
+# cancer_image_index = query_user("Choose image from cancerous test set", cn - 1)
+# healthy_image_index = query_user("Choose image from healthy test set", hn - 1)
+# btp_image_index = query_user("Choose image from another cancerous test set", bn - 1)
+
+cancer_image_index = 987
+healthy_image_index = 529
+btp_image_index = 100
 
 imageCancer = read_file(cancer_path).T[cancer_image_index]
 imageHealthy = read_file(healthy_path).T[healthy_image_index]
@@ -71,11 +75,8 @@ print("\n---------------------RESULTS---------------------")
 # Print out results.
 for i, prediction in enumerate(all_predictions):
     if prediction[0][1] > 0.5:
-        print("Patient " + str(i) + " is healthy.")
-        print("Confidence: " + str(prediction[0][1] * 100)[0:4] + "%\n")
+        print("Patient " + str(i) + " is/has " + prediction[0][0])
     elif prediction[1][1] > 0.5:
-        print("Patient " + str(i) + " has GBM.")
-        print("Confidence: " + str(prediction[1][1] * 100)[0:4] + "%\n")
+        print("Patient " + str(i) + " is/has " + prediction[1][0])
     elif prediction[2][1] > 0.5:
-        print("Patient " + str(i) + " has GBM.")
-        print("Confidence: " + str(prediction[2][1] * 100)[0:4] + "%\n")
+        print("Patient " + str(i) + " is/has " + prediction[2][0])
