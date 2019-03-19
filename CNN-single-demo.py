@@ -14,7 +14,7 @@ print("Model loaded.")
 
 # Prepare paths
 root = "../Aura_Data/Dataset/"
-cancer_path = root + "{256x256x7021}RIDERTestset.aura"
+cancer_path = "../Aura_Data/Chunked/ChunkedCPTAC/{256x256x10861}Chunk0.aura"
 healthy_path = root + "{136x136x22118}HealthyTestset.aura"
 btp_path = root + "{256x256x879}BTPTestset.aura"
 
@@ -56,7 +56,7 @@ def get_most_confident_prediction(prediction):
 # healthy_image_index = query_user("Choose image from healthy test set", hn - 1)
 # btp_image_index = query_user("Choose image from another cancerous test set", bn - 1)
 
-cancer_image_index = 987
+cancer_image_index = 7
 healthy_image_index = 529
 btp_image_index = 100
 
@@ -84,3 +84,4 @@ print("\n---------------------RESULTS---------------------")
 # Print out results.
 for i, prediction in enumerate(all_predictions):
     print("Patient " + str(i) + " is/has " + get_most_confident_prediction(prediction)[0])
+    print(get_most_confident_prediction(prediction)[1])
