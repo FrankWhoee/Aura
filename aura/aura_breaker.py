@@ -38,6 +38,8 @@ def percentise_aura(path, percent):
 
     :param path: A string type of the path to the aura file that is being chunked.
     :param percent: A float or double type of the percentage that should be in the first chunk.
+
+    Example: percent=0.9 would be 90% of data in first chunk, 10% in the second chunk
     """
     array = aura_loader.read_file(path).T
     random.shuffle(array)
@@ -74,4 +76,4 @@ def percentise_aura(path, percent):
     print("----------------- CHUNKING COMPLETE -----------------")
 
 
-break_aura("../../Aura_Data/Chunked/ChunkedCPTAC/{256x256x10861}Chunk0.aura", pieces=20)
+
