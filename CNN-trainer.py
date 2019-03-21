@@ -14,10 +14,10 @@ print("Current Working Directory" + os.getcwd())
 
 # Prepare paths for GCP training
 root = "../Aura_Data/"
-train_paths = [root + "{136x136x199063}HealthyTrainset.aura", root + "{256x256x63198}RIDERTrainset.aura",
-               root + "{256x256x7918}BTPTrainset.aura"]
-test_paths = [root + "{136x136x22118}HealthyTestset.aura", root + "{256x256x7021}RIDERTestset.aura",
-              root + "{256x256x879}BTPTestset.aura"]
+train_paths = [root + "{136x136x199063}HealthyTrainset.aura",
+               root + "{256x256x7918}BTPTrainset.aura", root + "{256x256x15624}LGGTrainset.aura", root + "{256x256x58652}CPTACTrainset.aura"]
+test_paths = [root + "{136x136x22118}HealthyTestset.aura",
+              root + "{256x256x879}BTPTestset.aura", root + "{256x256x1735}LGGTestset.aura", root + "{256x256x6516}CPTACTestset.aura"]
 
 # Prepare paths for local training experimentation
 # root = "../Aura_Data/Chunked/Dataset/"
@@ -27,12 +27,19 @@ test_paths = [root + "{136x136x22118}HealthyTestset.aura", root + "{256x256x7021
 train_data, train_label = get_data(train_paths)
 test_data, test_label = get_data(test_paths)
 
+# Merge labels to combine databases
+for label in train_label:
+    if label == 2:
+        label = 0
+    if label == 3:
+        label = 1
+
 train_n, train_l, train_w = train_data.shape
 test_n, test_l, test_w = test_data.shape
 
 # Set up CNN
 batch_size = 32
-num_classes = 3
+num_classes = 2
 epochs = 10
 # input image dimensions
 img_rows, img_cols = train_l, train_w
