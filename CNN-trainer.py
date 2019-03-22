@@ -34,6 +34,13 @@ for i,label in enumerate(train_label):
     if label == 3:
         train_label[i] = 1
 
+# Merge labels to combine databases
+for i,label in enumerate(test_label):
+    if label == 2:
+        test_label[i] = 0
+    if label == 3:
+        test_label[i] = 1
+
 train_n, train_l, train_w = train_data.shape
 test_n, test_l, test_w = test_data.shape
 
