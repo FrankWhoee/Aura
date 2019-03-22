@@ -28,11 +28,11 @@ train_data, train_label = get_data(train_paths)
 test_data, test_label = get_data(test_paths)
 
 # Merge labels to combine databases
-for label in train_label:
+for i,label in enumerate(train_label):
     if label == 2:
-        label = 0
+        train_label[i] = 0
     if label == 3:
-        label = 1
+        train_label[i] = 1
 
 train_n, train_l, train_w = train_data.shape
 test_n, test_l, test_w = test_data.shape
