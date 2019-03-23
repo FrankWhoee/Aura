@@ -11,7 +11,7 @@ def decode(predictions):
     :return: Returns a translated version of predictions, with labels.
     """
     decoded_predictions = []
-    result_possibilities = ["Healthy", "Recurrent GBM", "Early Stage GBM"]
+    result_possibilities = ["No GBM", "Early Stage GBM"]
     for index in range(len(predictions[0])):
         decoded_predictions.append([result_possibilities[index], predictions.tolist()[0][index]])
 
