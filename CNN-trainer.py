@@ -7,6 +7,7 @@ from keras.layers import Conv2D, MaxPooling2D
 from keras.callbacks import ModelCheckpoint
 from aura.aura_loader import get_data
 import matplotlib.pyplot as plt
+from scipy.ndimage.interpolation import rotate
 from time import time
 
 print("Modules imported.")
@@ -81,17 +82,15 @@ model.add(Conv2D(256, (2, 2), activation='relu'))
 # Dense layers and output
 model.add(Flatten())
 model.add(Dense(1024, activation='relu'))
-model.add(Dropout(0.1))
+model.add(Dropout(0.05))
 model.add(Dense(2048, activation='relu'))
-model.add(Dropout(0.1))
 model.add(Dense(1024, activation='relu'))
-model.add(Dropout(0.3))
+model.add(Dropout(0.2))
 model.add(Dense(512, activation='relu'))
-model.add(Dropout(0.5))
+model.add(Dropout(0.2))
 model.add(Dense(256, activation='relu'))
-model.add(Dropout(0.5))
 model.add(Dense(128, activation='relu'))
-model.add(Dropout(0.5))
+model.add(Dropout(0.1))
 model.add(Dense(64, activation='relu'))
 model.add(Dense(32, activation='relu'))
 model.add(Dense(num_classes, activation='softmax'))
