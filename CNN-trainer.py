@@ -15,10 +15,8 @@ print("Current Working Directory" + os.getcwd())
 
 # Prepare paths for GCP training
 root = "../Aura_Data/"
-train_paths = [root + "{136x136x16588}HealthyTrainset.aura",
-               root + "{256x256x7918}BTPTrainset.aura", root + "{256x256x15624}LGGTrainset.aura", root + "{256x256x21994}CPTACTrainset.aura"]
-test_paths = [root + "{136x136x5529}HealthyTestset.aura",
-              root + "{256x256x879}BTPTestset.aura", root + "{256x256x1735}LGGTestset.aura", root + "{256x256x7331}CPTACTestset.aura"]
+train_paths = [root + "{136x136x49439}HealthyTrainset.aura", root + "{256x256x21994}CPTACTrainset.aura"]
+test_paths = [root + "{136x136x5493}HealthyTestset.aura", root + "{256x256x7331}CPTACTestset.aura"]
 
 # Prepare paths for local training experimentation
 # root = "../Aura_Data/Chunked/Dataset/"
