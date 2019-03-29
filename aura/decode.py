@@ -17,6 +17,20 @@ def decode(predictions):
 
     return decoded_predictions
 
+def old_decode(predictions):
+    """
+    Decodes predictions with labels and confidence values.
+    Works for Models 11 or before.
+    :param predictions: A 2D numpy array of length 3, with output from Model-11 output neurons.
+    :return: Returns a translated version of predictions, with labels.
+    """
+    decoded_predictions = []
+    result_possibilities = ["Healthy", "Early Stage GBM"]
+    for index in range(len(predictions[0])):
+        decoded_predictions.append([result_possibilities[index], predictions.tolist()[0][index]])
+
+    return decoded_predictions
+
 
 def preprocess(image):
     """
