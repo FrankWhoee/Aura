@@ -74,6 +74,3 @@ def percentise_aura(path, percent):
     chunk2.tofile(f2)
 
     print("----------------- CHUNKING COMPLETE -----------------")
-
-
-
