@@ -5,18 +5,20 @@ from aura.decode import decode
 from aura.decode import preprocess
 from aura.decode import view_image as view
 from aura.aura_loader import parse_aura_dimensions
+from scipy.ndimage.interpolation import rotate
 from sys import stderr
 from time import sleep
+import numpy as np
 
 print("Loading model...")
-model = load_model("Model-11.hf")
+model = load_model("Model-12.hf")
 print("Model loaded.")
 
 # Prepare paths
-root = "../Aura_Data/Dataset/"
+root = "../Aura_Data/Dataset/Dataset-v2.2/"
 cancer_path = "../Aura_Data/Chunked/ChunkedCPTAC/{256x256x10861}Chunk0.aura"
-healthy_path = root + "{136x136x22118}HealthyTestset.aura"
-btp_path = root + "{256x256x879}BTPTestset.aura"
+healthy_path = root + "{136x136x5493}HealthyTestset.aura"
+btp_path = "../Aura_Data/Dataset/Dataset-v1/{256x256x879}BTPTestset.aura"
 
 cl, cw, cn = parse_aura_dimensions(cancer_path)
 hl, hw, hn = parse_aura_dimensions(healthy_path)
@@ -56,9 +58,9 @@ def get_most_confident_prediction(prediction):
 # healthy_image_index = query_user("Choose image from healthy test set", hn - 1)
 # btp_image_index = query_user("Choose image from another cancerous test set", bn - 1)
 
-cancer_image_index = 7
-healthy_image_index = 529
-btp_image_index = 100
+healthy_image_index = 3061
+cancer_image_index = 1974
+btp_image_index = 512
 
 imageHealthy = read_file(healthy_path).T[healthy_image_index]
 imageCancer = read_file(cancer_path).T[cancer_image_index]
@@ -72,6 +74,7 @@ all_predictions = []
 # Preprocess all images and plot them.
 for index, image in enumerate(all_images):
     view(image)
+    image = rotate(image.astype(np.float32), 270)
     all_images[index] = preprocess(image)
 print("Images processed.")
 
@@ -84,4 +87,3 @@ print("\n---------------------RESULTS---------------------")
 # Print out results.
 for i, prediction in enumerate(all_predictions):
     print("Patient " + str(i) + " is/has " + get_most_confident_prediction(prediction)[0])
-    print(get_most_confident_prediction(prediction)[1])
