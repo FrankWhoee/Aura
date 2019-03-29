@@ -2,15 +2,10 @@ import pydicom as dicom
 import os, numpy, sys, time
 import scipy.misc
 
-# path_data = input("Path to folder containing all .dcm files: ")
-# new_filename = input("Filename to dump information into: ")
-# resize_l = input("Length to resize images to:")
-# resize_w = input("Width to resize images to:")
-
-path_data = "../../Aura_Data/Unextracted/CPTAC-GBM"
-new_filename = "CPTAC"
-resize_l = 256
-resize_w = 256
+path_data = input("Path to folder containing all .dcm files: ")
+new_filename = input("Filename to dump information into: ")
+resize_l = input("Length to resize images to:")
+resize_w = input("Width to resize images to:")
 
 if ".aura" not in new_filename:
     new_filename += ".aura"
