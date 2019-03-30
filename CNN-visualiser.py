@@ -5,16 +5,17 @@ from vis.visualization.activation_maximization import visualize_activation
 from matplotlib import pyplot
 
 
-def generate_model_image(model_path):
+def generate_model_image(model_path, filename):
     """
-    Generates a flow chart of the model to model.png
+    Generates a flow chart of the model.
     :param model_path: Path of the Keras model to be loaded. Expects string input.
+    :param filename: Path of file to be generated and downloaded. Expects string input.
     :return: None
     """
     print("Loading model...")
     model = load_model(model_path)
     print("Model loaded. Plotting model...")
-    plot_model(model, to_file='model.png', show_shapes=True)
+    plot_model(model, to_file=filename, show_shapes=True)
     print("Plotting complete. File is ready at model.png")
 
 
@@ -58,3 +59,4 @@ def visualize_feature_maps(model_path, layer):
     pyplot.axes().set_aspect('equal', 'datalim')
     pyplot.pcolormesh(layers[:, :, 0])
     pyplot.show()
+
