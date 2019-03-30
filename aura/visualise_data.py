@@ -8,7 +8,7 @@ from aura.aura_loader import read_file as rf
 path = input("Path of file to be read: ")
 if path == "":
     print("No path entered. Defaulting to ../Aura_Data/{136x136x217000}Healthy.aura")
-    path = "aura/{136x136x217000}Healthy.aura"
+    path = "../../Aura_Data/Chunked/ChunkedCPTAC/{256x256x10861}Chunk0.aura"
 
 while not os.path.isfile(path):
     sys.stderr.write("File does not exist.\n")

@@ -7,6 +7,7 @@ from keras.layers import Conv2D, MaxPooling2D
 from keras.callbacks import ModelCheckpoint
 from aura.aura_loader import get_data
 import matplotlib.pyplot as plt
+from scipy.ndimage.interpolation import rotate
 from time import time
 
 print("Modules imported.")
@@ -14,10 +15,8 @@ print("Current Working Directory" + os.getcwd())
 
 # Prepare paths for GCP training
 root = "../Aura_Data/"
-train_paths = [root + "{136x136x199063}HealthyTrainset.aura", root + "{256x256x63198}RIDERTrainset.aura",
-               root + "{256x256x7918}BTPTrainset.aura"]
-test_paths = [root + "{136x136x22118}HealthyTestset.aura", root + "{256x256x7021}RIDERTestset.aura",
-              root + "{256x256x879}BTPTestset.aura"]
+train_paths = [root + "{136x136x49439}HealthyTrainset.aura", root + "{256x256x21994}CPTACTrainset.aura"]
+test_paths = [root + "{136x136x5493}HealthyTestset.aura", root + "{256x256x7331}CPTACTestset.aura"]
 
 # Prepare paths for local training experimentation
 # root = "../Aura_Data/Chunked/Dataset/"
@@ -27,12 +26,26 @@ test_paths = [root + "{136x136x22118}HealthyTestset.aura", root + "{256x256x7021
 train_data, train_label = get_data(train_paths)
 test_data, test_label = get_data(test_paths)
 
+# Merge labels to combine databases
+for i,label in enumerate(train_label):
+    if label == 2:
+        train_label[i] = 0
+    if label == 3:
+        train_label[i] = 1
+
+# Merge labels to combine databases
+for i,label in enumerate(test_label):
+    if label == 2:
+        test_label[i] = 0
+    if label == 3:
+        test_label[i] = 1
+
 train_n, train_l, train_w = train_data.shape
 test_n, test_l, test_w = test_data.shape
 
 # Set up CNN
 batch_size = 32
-num_classes = 3
+num_classes = 2
 epochs = 10
 # input image dimensions
 img_rows, img_cols = train_l, train_w
@@ -67,15 +80,16 @@ model.add(Conv2D(256, (2, 2), activation='relu'))
 # Dense layers and output
 model.add(Flatten())
 model.add(Dense(1024, activation='relu'))
-model.add(Dropout(0.01))
+model.add(Dropout(0.1))
 model.add(Dense(2048, activation='relu'))
+model.add(Dropout(0.05))
 model.add(Dense(1024, activation='relu'))
-model.add(Dropout(0.2))
+model.add(Dropout(0.25))
 model.add(Dense(512, activation='relu'))
-model.add(Dropout(0.2))
+model.add(Dropout(0.25))
 model.add(Dense(256, activation='relu'))
 model.add(Dense(128, activation='relu'))
-model.add(Dropout(0.1))
+model.add(Dropout(0.15))
 model.add(Dense(64, activation='relu'))
 model.add(Dense(32, activation='relu'))
 model.add(Dense(num_classes, activation='softmax'))

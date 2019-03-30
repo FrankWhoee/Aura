@@ -1,4 +1,4 @@
-import time
+from time import time
 import numpy
 from aura.extractor_util import parse_aura_dimensions
 import numpy as np
@@ -18,17 +18,17 @@ def read_file(path):
     filename = filename[len(filename) - 1]
     l, w, n = parse_aura_dimensions(filename)
     print("Loading " + filename + "...")
-    initial = time.time()
+    initial = time()
 
     # Load unshaped array into numpy
-    unshaped_array = numpy.fromfile(path, dtype=numpy.float16);
+    unshaped_array = numpy.fromfile(path, dtype=numpy.float16)
 
     # Determine number of images by dividing the length of the unshaped array by the area of each image.
     num_of_images = int(len(unshaped_array) / (l * w))
     if num_of_images != n:
         unshaped_array = numpy.fromfile(path);
         num_of_images = int(len(unshaped_array) / (l * w))
-    final = time.time()
+    final = time()
     difference = final - initial
     print(num_of_images, "images loaded in", str(difference)[0:5], "seconds.")
 
