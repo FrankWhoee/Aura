@@ -7,11 +7,11 @@
   Simultaneously, detection models have made great progress with non-small cell lung cancer and Alzheimer's in the medical diagnostics industry, while the current conventional detection of brain tumors involves human inspection of radiological imagery for tissue abnormalities. Our project aims to utilize convolutional neural networks on MR imaging for the same purpose. Work was primarily split into three categories: data extraction and preprocessing of imagery, convolutional neural network training, and the machine learning classification period. <br><br>
   The automation of early-stage tumor detection drastically reduces the workload of radiologists, aids with patient outcomes through earlier treatment, and may provide insight into the characteristics of high-grade astrocytomas. MR Imaging and ML algorithms look promising regarding their potential applications in the medical field, particularly in the field of medical diagnoses. <br><br>
 
-## Model-11 Accuracy and Results
+## Model-12 Accuracy and Results
 
 | Dataset | Accuracy | Loss | Dataset size |
 | ------- | -------- | ---- | ------------ |
-| Training  | 0.9897 | 0.0380  | 270179  |
-| Testing  | 0.9964  | 0.0149  | 30018 |
+| Training  | 0.9706 | 0.0796  | 265633  |
+| Testing  | 0.9793  | 0.0710  | 31248 |
 
 #### Project Aura supports open source! We support open source knowledge and code.
