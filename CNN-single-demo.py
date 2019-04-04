@@ -15,10 +15,10 @@ model = load_model("Model-12.hf")
 print("Model loaded.")
 
 # Prepare paths
-root = "../Aura_Data/Dataset/Dataset-v2.2/"
-cancer_path = "../Aura_Data/Chunked/ChunkedCPTAC/{256x256x10861}Chunk0.aura"
+root = "../Aura_Data/Dataset/GVRSF-Demoset/"
+cancer_path = root + "{256x256x10861}Chunk0.aura"
 healthy_path = root + "{136x136x5493}HealthyTestset.aura"
-btp_path = "../Aura_Data/Dataset/Dataset-v1/{256x256x879}BTPTestset.aura"
+btp_path = root + "{256x256x631}BTPTestset.aura"
 
 cl, cw, cn = parse_aura_dimensions(cancer_path)
 hl, hw, hn = parse_aura_dimensions(healthy_path)
@@ -60,7 +60,7 @@ def get_most_confident_prediction(prediction):
 
 healthy_image_index = 3061
 cancer_image_index = 1974
-btp_image_index = 512
+btp_image_index = 295
 
 imageHealthy = read_file(healthy_path).T[healthy_image_index]
 imageCancer = read_file(cancer_path).T[cancer_image_index]
